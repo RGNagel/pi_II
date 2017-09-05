@@ -19,7 +19,7 @@ begin
             temporal <= '0';
             counter <= 0;
         elsif rising_edge(clk_in) then
-            if (counter = 50000000) then
+            if (counter = 50000000/4) then
                 temporal <= NOT(temporal);
                 counter <= 0;
             else
