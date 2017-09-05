@@ -2,16 +2,16 @@
 TimeQuest Timing Analyzer Summary
 ------------------------------------------------------------
 
-Type  : Slow 1200mV 85C Model Setup 'CLOCK_50'
-Slack : -3.955
-TNS   : -51.955
-
 Type  : Slow 1200mV 85C Model Setup 'freq_divider:uut|temporal'
-Slack : 0.127
-TNS   : 0.000
+Slack : -5.144
+TNS   : -351.454
+
+Type  : Slow 1200mV 85C Model Setup 'CLOCK_50'
+Slack : -4.026
+TNS   : -53.338
 
 Type  : Slow 1200mV 85C Model Hold 'freq_divider:uut|temporal'
-Slack : 0.408
+Slack : 0.389
 TNS   : 0.000
 
 Type  : Slow 1200mV 85C Model Hold 'CLOCK_50'
@@ -24,18 +24,18 @@ TNS   : -37.695
 
 Type  : Slow 1200mV 85C Model Minimum Pulse Width 'freq_divider:uut|temporal'
 Slack : -1.285
-TNS   : -6.425
-
-Type  : Slow 1200mV 0C Model Setup 'CLOCK_50'
-Slack : -3.576
-TNS   : -44.190
+TNS   : -118.220
 
 Type  : Slow 1200mV 0C Model Setup 'freq_divider:uut|temporal'
-Slack : 0.216
-TNS   : 0.000
+Slack : -4.648
+TNS   : -312.552
+
+Type  : Slow 1200mV 0C Model Setup 'CLOCK_50'
+Slack : -3.629
+TNS   : -45.315
 
 Type  : Slow 1200mV 0C Model Hold 'freq_divider:uut|temporal'
-Slack : 0.366
+Slack : 0.347
 TNS   : 0.000
 
 Type  : Slow 1200mV 0C Model Hold 'CLOCK_50'
@@ -48,18 +48,18 @@ TNS   : -37.695
 
 Type  : Slow 1200mV 0C Model Minimum Pulse Width 'freq_divider:uut|temporal'
 Slack : -1.285
-TNS   : -6.425
-
-Type  : Fast 1200mV 0C Model Setup 'CLOCK_50'
-Slack : -1.458
-TNS   : -12.251
+TNS   : -118.220
 
 Type  : Fast 1200mV 0C Model Setup 'freq_divider:uut|temporal'
-Slack : 0.572
-TNS   : 0.000
+Slack : -2.016
+TNS   : -124.893
+
+Type  : Fast 1200mV 0C Model Setup 'CLOCK_50'
+Slack : -1.573
+TNS   : -12.999
 
 Type  : Fast 1200mV 0C Model Hold 'freq_divider:uut|temporal'
-Slack : 0.189
+Slack : 0.179
 TNS   : 0.000
 
 Type  : Fast 1200mV 0C Model Hold 'CLOCK_50'
@@ -68,10 +68,10 @@ TNS   : 0.000
 
 Type  : Fast 1200mV 0C Model Minimum Pulse Width 'CLOCK_50'
 Slack : -3.000
-TNS   : -37.879
+TNS   : -37.898
 
 Type  : Fast 1200mV 0C Model Minimum Pulse Width 'freq_divider:uut|temporal'
 Slack : -1.000
-TNS   : -5.000
+TNS   : -92.000
 
 ------------------------------------------------------------

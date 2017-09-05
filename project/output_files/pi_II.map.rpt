@@ -1,5 +1,5 @@
 Analysis & Synthesis report for pi_II
-Tue Sep  5 19:03:41 2017
+Tue Sep  5 20:23:59 2017
 Quartus Prime Version 16.1.0 Build 196 10/24/2016 SJ Lite Edition
 
 
@@ -48,16 +48,16 @@ agreement for further details.
 +----------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                     ;
 +------------------------------------+---------------------------------------------+
-; Analysis & Synthesis Status        ; Successful - Tue Sep  5 19:03:41 2017       ;
+; Analysis & Synthesis Status        ; Successful - Tue Sep  5 20:23:59 2017       ;
 ; Quartus Prime Version              ; 16.1.0 Build 196 10/24/2016 SJ Lite Edition ;
 ; Revision Name                      ; pi_II                                       ;
 ; Top-level Entity Name              ; pi_II                                       ;
 ; Family                             ; Cyclone IV E                                ;
-; Total logic elements               ; 59                                          ;
-;     Total combinational functions  ; 56                                          ;
-;     Dedicated logic registers      ; 32                                          ;
-; Total registers                    ; 32                                          ;
-; Total pins                         ; 70                                          ;
+; Total logic elements               ; 384                                         ;
+;     Total combinational functions  ; 384                                         ;
+;     Dedicated logic registers      ; 119                                         ;
+; Total registers                    ; 119                                         ;
+; Total pins                         ; 79                                          ;
 ; Total virtual pins                 ; 0                                           ;
 ; Total memory bits                  ; 0                                           ;
 ; Embedded Multiplier 9-bit elements ; 0                                           ;
@@ -179,36 +179,36 @@ agreement for further details.
 +----------------------------------+-----------------+-----------------+-------------------------------------------------+---------+
 
 
-+--------------------------------------------------------------+
-; Analysis & Synthesis Resource Usage Summary                  ;
-+---------------------------------------------+----------------+
-; Resource                                    ; Usage          ;
-+---------------------------------------------+----------------+
-; Estimated Total logic elements              ; 59             ;
-;                                             ;                ;
-; Total combinational functions               ; 56             ;
-; Logic element usage by number of LUT inputs ;                ;
-;     -- 4 input functions                    ; 8              ;
-;     -- 3 input functions                    ; 16             ;
-;     -- <=2 input functions                  ; 32             ;
-;                                             ;                ;
-; Logic elements by mode                      ;                ;
-;     -- normal mode                          ; 31             ;
-;     -- arithmetic mode                      ; 25             ;
-;                                             ;                ;
-; Total registers                             ; 32             ;
-;     -- Dedicated logic registers            ; 32             ;
-;     -- I/O registers                        ; 0              ;
-;                                             ;                ;
-; I/O pins                                    ; 70             ;
-;                                             ;                ;
-; Embedded Multiplier 9-bit elements          ; 0              ;
-;                                             ;                ;
-; Maximum fan-out node                        ; CLOCK_50~input ;
-; Maximum fan-out                             ; 27             ;
-; Total fan-out                               ; 310            ;
-; Average fan-out                             ; 1.36           ;
-+---------------------------------------------+----------------+
++-------------------------------------------------------------------------+
+; Analysis & Synthesis Resource Usage Summary                             ;
++---------------------------------------------+---------------------------+
+; Resource                                    ; Usage                     ;
++---------------------------------------------+---------------------------+
+; Estimated Total logic elements              ; 384                       ;
+;                                             ;                           ;
+; Total combinational functions               ; 384                       ;
+; Logic element usage by number of LUT inputs ;                           ;
+;     -- 4 input functions                    ; 264                       ;
+;     -- 3 input functions                    ; 81                        ;
+;     -- <=2 input functions                  ; 39                        ;
+;                                             ;                           ;
+; Logic elements by mode                      ;                           ;
+;     -- normal mode                          ; 328                       ;
+;     -- arithmetic mode                      ; 56                        ;
+;                                             ;                           ;
+; Total registers                             ; 119                       ;
+;     -- Dedicated logic registers            ; 119                       ;
+;     -- I/O registers                        ; 0                         ;
+;                                             ;                           ;
+; I/O pins                                    ; 79                        ;
+;                                             ;                           ;
+; Embedded Multiplier 9-bit elements          ; 0                         ;
+;                                             ;                           ;
+; Maximum fan-out node                        ; freq_divider:uut|temporal ;
+; Maximum fan-out                             ; 93                        ;
+; Total fan-out                               ; 1817                      ;
+; Average fan-out                             ; 2.75                      ;
++---------------------------------------------+---------------------------+
 
 
 +-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -216,83 +216,28 @@ agreement for further details.
 +-------------------------------+---------------------+---------------------------+-------------+--------------+---------+-----------+------+--------------+---------------------------------+-----------------+--------------+
 ; Compilation Hierarchy Node    ; Combinational ALUTs ; Dedicated Logic Registers ; Memory Bits ; DSP Elements ; DSP 9x9 ; DSP 18x18 ; Pins ; Virtual Pins ; Full Hierarchy Name             ; Entity Name     ; Library Name ;
 +-------------------------------+---------------------+---------------------------+-------------+--------------+---------+-----------+------+--------------+---------------------------------+-----------------+--------------+
-; |pi_II                        ; 56 (3)              ; 32 (5)                    ; 0           ; 0            ; 0       ; 0         ; 70   ; 0            ; |pi_II                          ; pi_II           ; work         ;
+; |pi_II                        ; 384 (208)           ; 119 (92)                  ; 0           ; 0            ; 0       ; 0         ; 79   ; 0            ; |pi_II                          ; pi_II           ; work         ;
 ;    |freq_divider:uut|         ; 48 (48)             ; 27 (27)                   ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |pi_II|freq_divider:uut         ; freq_divider    ; work         ;
-;    |setDisplaysText:displays| ; 5 (5)               ; 0 (0)                     ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |pi_II|setDisplaysText:displays ; setDisplaysText ; work         ;
+;    |setDisplaysText:displays| ; 128 (128)           ; 0 (0)                     ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |pi_II|setDisplaysText:displays ; setDisplaysText ; work         ;
 +-------------------------------+---------------------+---------------------------+-------------+--------------+---------+-----------+------+--------------+---------------------------------+-----------------+--------------+
 Note: For table entries with two numbers listed, the numbers in parentheses indicate the number of resources of the given type used by the specific entity alone. The numbers listed outside of parentheses indicate the total resources of the given type used by the specific entity and all of its sub-entities in the hierarchy.
 
 
-+---------------------------------------------------------------------------------+
-; Registers Removed During Synthesis                                              ;
-+----------------------------------------+----------------------------------------+
-; Register name                          ; Reason for Removal                     ;
-+----------------------------------------+----------------------------------------+
-; txt[1][1]                              ; Merged with LEDR[0]~reg0               ;
-; txt[2][0]                              ; Merged with LEDR[0]~reg0               ;
-; txt[2][1]                              ; Merged with LEDR[0]~reg0               ;
-; txt[3][1]                              ; Merged with LEDR[0]~reg0               ;
-; txt[4][3]                              ; Merged with LEDR[0]~reg0               ;
-; txt[4][5]                              ; Merged with LEDR[0]~reg0               ;
-; txt[5][0]                              ; Merged with LEDR[0]~reg0               ;
-; txt[5][2]                              ; Merged with LEDR[0]~reg0               ;
-; txt[5][3]                              ; Merged with LEDR[0]~reg0               ;
-; txt[5][5]                              ; Merged with LEDR[0]~reg0               ;
-; txt[6][2]                              ; Merged with LEDR[0]~reg0               ;
-; txt[6][3]                              ; Merged with LEDR[0]~reg0               ;
-; txt[6][5]                              ; Merged with LEDR[0]~reg0               ;
-; txt[3][2]                              ; Merged with LEDR[1]~reg0               ;
-; txt[4][4]                              ; Merged with LEDR[1]~reg0               ;
-; txt[4][6]                              ; Merged with LEDR[1]~reg0               ;
-; txt[5][1]                              ; Merged with LEDR[1]~reg0               ;
-; txt[5][4]                              ; Merged with LEDR[1]~reg0               ;
-; txt[5][6]                              ; Merged with LEDR[1]~reg0               ;
-; txt[6][6]                              ; Merged with LEDR[1]~reg0               ;
-; txt[1][3]                              ; Merged with txt[1][2]                  ;
-; txt[1][4]                              ; Merged with txt[1][2]                  ;
-; txt[1][5]                              ; Merged with txt[1][2]                  ;
-; txt[1][7]                              ; Merged with txt[1][2]                  ;
-; txt[2][4]                              ; Merged with txt[1][2]                  ;
-; txt[2][5]                              ; Merged with txt[1][2]                  ;
-; txt[2][7]                              ; Merged with txt[1][2]                  ;
-; txt[3][0]                              ; Merged with txt[1][2]                  ;
-; txt[3][3]                              ; Merged with txt[1][2]                  ;
-; txt[3][5]                              ; Merged with txt[1][2]                  ;
-; txt[3][7]                              ; Merged with txt[1][2]                  ;
-; txt[4][1]                              ; Merged with txt[1][2]                  ;
-; txt[4][7]                              ; Merged with txt[1][2]                  ;
-; txt[5][7]                              ; Merged with txt[1][2]                  ;
-; txt[6][1]                              ; Merged with txt[1][2]                  ;
-; txt[6][4]                              ; Merged with txt[1][2]                  ;
-; txt[6][7]                              ; Merged with txt[1][2]                  ;
-; txt[7][1]                              ; Merged with txt[1][2]                  ;
-; txt[7][4]                              ; Merged with txt[1][2]                  ;
-; txt[7][6]                              ; Merged with txt[1][2]                  ;
-; txt[7][7]                              ; Merged with txt[1][2]                  ;
-; txt[8][1]                              ; Merged with txt[1][2]                  ;
-; txt[8][4]                              ; Merged with txt[1][2]                  ;
-; txt[8][6]                              ; Merged with txt[1][2]                  ;
-; txt[8][7]                              ; Merged with txt[1][2]                  ;
-; txt[1][6]                              ; Merged with txt[1][0]                  ;
-; txt[2][2]                              ; Merged with txt[1][0]                  ;
-; txt[2][3]                              ; Merged with txt[1][0]                  ;
-; txt[2][6]                              ; Merged with txt[1][0]                  ;
-; txt[3][4]                              ; Merged with txt[1][0]                  ;
-; txt[3][6]                              ; Merged with txt[1][0]                  ;
-; txt[4][0]                              ; Merged with txt[1][0]                  ;
-; txt[4][2]                              ; Merged with txt[1][0]                  ;
-; txt[6][0]                              ; Merged with txt[1][0]                  ;
-; txt[7][0]                              ; Merged with txt[1][0]                  ;
-; txt[7][2]                              ; Merged with txt[1][0]                  ;
-; txt[7][3]                              ; Merged with txt[1][0]                  ;
-; txt[7][5]                              ; Merged with txt[1][0]                  ;
-; txt[8][0]                              ; Merged with txt[1][0]                  ;
-; txt[8][2]                              ; Merged with txt[1][0]                  ;
-; txt[8][3]                              ; Merged with txt[1][0]                  ;
-; txt[8][5]                              ; Merged with txt[1][0]                  ;
-; txt[1][2]                              ; Stuck at GND due to stuck port data_in ;
-; Total Number of Removed Registers = 63 ;                                        ;
-+----------------------------------------+----------------------------------------+
++--------------------------------------------------------------------------------+
+; Registers Removed During Synthesis                                             ;
++---------------------------------------+----------------------------------------+
+; Register name                         ; Reason for Removal                     ;
++---------------------------------------+----------------------------------------+
+; txt[2][7]                             ; Merged with txt[1][7]                  ;
+; txt[3][7]                             ; Merged with txt[1][7]                  ;
+; txt[4][7]                             ; Merged with txt[1][7]                  ;
+; txt[5][7]                             ; Merged with txt[1][7]                  ;
+; txt[6][7]                             ; Merged with txt[1][7]                  ;
+; txt[7][7]                             ; Merged with txt[1][7]                  ;
+; txt[8][7]                             ; Merged with txt[1][7]                  ;
+; txt[1][7]                             ; Stuck at GND due to stuck port data_in ;
+; Total Number of Removed Registers = 8 ;                                        ;
++---------------------------------------+----------------------------------------+
 
 
 +------------------------------------------------------+
@@ -300,12 +245,12 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +----------------------------------------------+-------+
 ; Statistic                                    ; Value ;
 +----------------------------------------------+-------+
-; Total registers                              ; 32    ;
+; Total registers                              ; 119   ;
 ; Number of registers using Synchronous Clear  ; 0     ;
-; Number of registers using Synchronous Load   ; 0     ;
+; Number of registers using Synchronous Load   ; 15    ;
 ; Number of registers using Asynchronous Clear ; 0     ;
 ; Number of registers using Asynchronous Load  ; 0     ;
-; Number of registers using Clock Enable       ; 3     ;
+; Number of registers using Clock Enable       ; 39    ;
 ; Number of registers using Preset             ; 0     ;
 +----------------------------------------------+-------+
 
@@ -315,7 +260,10 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------+
 ; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output ;
 +--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------+
-; 3:1                ; 3 bits    ; 6 LEs         ; 3 LEs                ; 3 LEs                  ; Yes        ; |pi_II|txt[1][0]           ;
+; 3:1                ; 16 bits   ; 32 LEs        ; 32 LEs               ; 0 LEs                  ; Yes        ; |pi_II|txt[8][0]           ;
+; 4:1                ; 19 bits   ; 38 LEs        ; 38 LEs               ; 0 LEs                  ; Yes        ; |pi_II|txt[4][2]           ;
+; 5:1                ; 20 bits   ; 60 LEs        ; 20 LEs               ; 40 LEs                 ; Yes        ; |pi_II|txt[2][3]           ;
+; 3:1                ; 69 bits   ; 138 LEs       ; 69 LEs               ; 69 LEs                 ; No         ; |pi_II|first_cycle         ;
 +--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------+
 
 
@@ -353,22 +301,24 @@ Note: In order to hide this table in the UI and the text report file, please set
 +-----------------------+-----------------------------+
 ; Type                  ; Count                       ;
 +-----------------------+-----------------------------+
-; boundary_port         ; 70                          ;
-; cycloneiii_ff         ; 32                          ;
-;     ENA               ; 3                           ;
-;     plain             ; 29                          ;
-; cycloneiii_lcell_comb ; 61                          ;
-;     arith             ; 25                          ;
+; boundary_port         ; 79                          ;
+; cycloneiii_ff         ; 119                         ;
+;     ENA               ; 39                          ;
+;     SLD               ; 15                          ;
+;     plain             ; 65                          ;
+; cycloneiii_lcell_comb ; 385                         ;
+;     arith             ; 56                          ;
 ;         2 data inputs ; 25                          ;
-;     normal            ; 36                          ;
-;         0 data inputs ; 2                           ;
-;         1 data inputs ; 6                           ;
-;         2 data inputs ; 4                           ;
-;         3 data inputs ; 16                          ;
-;         4 data inputs ; 8                           ;
+;         3 data inputs ; 31                          ;
+;     normal            ; 329                         ;
+;         0 data inputs ; 1                           ;
+;         1 data inputs ; 3                           ;
+;         2 data inputs ; 11                          ;
+;         3 data inputs ; 50                          ;
+;         4 data inputs ; 264                         ;
 ;                       ;                             ;
-; Max LUT depth         ; 4.30                        ;
-; Average LUT depth     ; 3.00                        ;
+; Max LUT depth         ; 7.00                        ;
+; Average LUT depth     ; 3.98                        ;
 +-----------------------+-----------------------------+
 
 
@@ -377,7 +327,7 @@ Note: In order to hide this table in the UI and the text report file, please set
 +----------------+--------------+
 ; Partition Name ; Elapsed Time ;
 +----------------+--------------+
-; Top            ; 00:00:00     ;
+; Top            ; 00:00:01     ;
 +----------------+--------------+
 
 
@@ -387,7 +337,7 @@ Note: In order to hide this table in the UI and the text report file, please set
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 16.1.0 Build 196 10/24/2016 SJ Lite Edition
-    Info: Processing started: Tue Sep  5 19:03:29 2017
+    Info: Processing started: Tue Sep  5 20:23:46 2017
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off pi_II -c pi_II
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 2 of the 2 processors detected
@@ -410,59 +360,42 @@ Info (12021): Found 2 design units, including 1 entities, in source file setDisp
     Info (12023): Found entity 1: setDisplaysText File: /home/rgnagel/pi_II/project/setDisplaysText.vhd Line: 10
 Info (12127): Elaborating entity "pi_II" for the top level hierarchy
 Warning (10540): VHDL Signal Declaration warning at pi_II.vhd(37): used explicit default value for signal "reset" because signal was never assigned a value File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 37
-Warning (10036): Verilog HDL or VHDL warning at pi_II.vhd(40): object "txt2" assigned a value but never read File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 40
-Warning (10812): VHDL warning at pi_II.vhd(64): sensitivity list already contains KEY File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 64
-Warning (10445): VHDL Subtype or Type Declaration warning at pi_II.vhd(88): subtype or type has null range File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 88
-Warning (10873): Using initial value X (don't care) for net "LEDR[8..3]" at pi_II.vhd(12) File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 12
-Info (12128): Elaborating entity "freq_divider" for hierarchy "freq_divider:uut" File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 46
-Info (12128): Elaborating entity "setDisplaysText" for hierarchy "setDisplaysText:displays" File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 51
+Warning (10812): VHDL warning at pi_II.vhd(63): sensitivity list already contains KEY File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 63
+Warning (10873): Using initial value X (don't care) for net "LEDR[16..0]" at pi_II.vhd(12) File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 12
+Info (12128): Elaborating entity "freq_divider" for hierarchy "freq_divider:uut" File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 45
+Info (12128): Elaborating entity "setDisplaysText" for hierarchy "setDisplaysText:displays" File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 50
 Warning (13024): Output pins are stuck at VCC or GND
+    Warning (13410): Pin "LEDR[0]" is stuck at GND File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 12
+    Warning (13410): Pin "LEDR[1]" is stuck at GND File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 12
+    Warning (13410): Pin "LEDR[2]" is stuck at GND File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 12
     Warning (13410): Pin "LEDR[3]" is stuck at GND File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 12
     Warning (13410): Pin "LEDR[4]" is stuck at GND File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 12
     Warning (13410): Pin "LEDR[5]" is stuck at GND File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 12
     Warning (13410): Pin "LEDR[6]" is stuck at GND File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 12
     Warning (13410): Pin "LEDR[7]" is stuck at GND File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 12
     Warning (13410): Pin "LEDR[8]" is stuck at GND File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 12
-    Warning (13410): Pin "HEX0[0]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX0[1]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX0[2]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX0[3]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX0[4]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX0[5]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX0[6]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX1[0]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX1[1]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX1[2]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX1[3]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX1[4]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX1[5]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX1[6]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX2[3]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX3[0]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX3[1]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX3[2]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX3[3]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX3[5]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX4[0]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX4[6]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX5[0]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX5[1]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX5[2]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX6[6]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
+    Warning (13410): Pin "LEDR[9]" is stuck at GND File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 12
+    Warning (13410): Pin "LEDR[10]" is stuck at GND File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 12
+    Warning (13410): Pin "LEDR[11]" is stuck at GND File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 12
+    Warning (13410): Pin "LEDR[12]" is stuck at GND File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 12
+    Warning (13410): Pin "LEDR[13]" is stuck at GND File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 12
+    Warning (13410): Pin "LEDR[14]" is stuck at GND File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 12
+    Warning (13410): Pin "LEDR[15]" is stuck at GND File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 12
+    Warning (13410): Pin "LEDR[16]" is stuck at GND File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 12
 Info (286030): Timing-Driven Synthesis is running
 Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
     Info (16011): Adding 0 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
 Warning (21074): Design contains 2 input pin(s) that do not drive logic
     Warning (15610): No output dependent on input pin "KEY[2]" File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 10
     Warning (15610): No output dependent on input pin "KEY[3]" File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 10
-Info (21057): Implemented 129 device resources after synthesis - the final resource count might be different
+Info (21057): Implemented 463 device resources after synthesis - the final resource count might be different
     Info (21058): Implemented 5 input pins
-    Info (21059): Implemented 65 output pins
-    Info (21061): Implemented 59 logic cells
-Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 42 warnings
-    Info: Peak virtual memory: 975 megabytes
-    Info: Processing ended: Tue Sep  5 19:03:41 2017
-    Info: Elapsed time: 00:00:12
+    Info (21059): Implemented 74 output pins
+    Info (21061): Implemented 384 logic cells
+Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 25 warnings
+    Info: Peak virtual memory: 967 megabytes
+    Info: Processing ended: Tue Sep  5 20:23:59 2017
+    Info: Elapsed time: 00:00:13
     Info: Total CPU time (on all processors): 00:00:28
 
 

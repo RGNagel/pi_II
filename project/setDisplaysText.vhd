@@ -19,12 +19,14 @@ architecture set of setDisplaysText is
 --SIGNAL display_code : BIT_VECTOR(6 DOWNTO 0);
 --SIGNAL display_code : std_logic_vector(6 DOWNTO 0);
 SIGNAL blink : std_logic;
-shared variable display_code : std_logic_vector(6 DOWNTO 0);
-shared variable i : integer;
+
 begin
-    setTxt: process (txt) begin
+    setTxt: process (txt) 
+	 variable display_code : std_logic_vector(6 DOWNTO 0);
+	 variable i : integer;
+	 begin
 		--blink <= not(blink);
-		--HEX0(0) <= blink;
+		--HEX0(0) <= blink;	
 		--HEX0(1) <= blink;
 		--HEX0(2) <= blink;
 		--HEX1 <= "1010101";

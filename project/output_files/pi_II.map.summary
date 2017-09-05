@@ -1,13 +1,13 @@
-Analysis & Synthesis Status : Successful - Tue Sep  5 19:03:41 2017
+Analysis & Synthesis Status : Successful - Tue Sep  5 20:23:59 2017
 Quartus Prime Version : 16.1.0 Build 196 10/24/2016 SJ Lite Edition
 Revision Name : pi_II
 Top-level Entity Name : pi_II
 Family : Cyclone IV E
-Total logic elements : 59
-    Total combinational functions : 56
-    Dedicated logic registers : 32
-Total registers : 32
-Total pins : 70
+Total logic elements : 384
+    Total combinational functions : 384
+    Dedicated logic registers : 119
+Total registers : 119
+Total pins : 79
 Total virtual pins : 0
 Total memory bits : 0
 Embedded Multiplier 9-bit elements : 0
