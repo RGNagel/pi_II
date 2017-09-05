@@ -20,22 +20,27 @@ architecture set of setDisplaysText is
 --SIGNAL display_code : std_logic_vector(6 DOWNTO 0);
 SIGNAL blink : std_logic;
 shared variable display_code : std_logic_vector(6 DOWNTO 0);
+shared variable i : integer;
 begin
     setTxt: process (txt) begin
-		blink <= not(blink);
-		HEX0(0) <= blink;
-		HEX0(1) <= blink;
-		HEX0(2) <= blink;
-		HEX1 <= "1010101";
-		for i in 1 to txt_len loop
+		--blink <= not(blink);
+		--HEX0(0) <= blink;
+		--HEX0(1) <= blink;
+		--HEX0(2) <= blink;
+		--HEX1 <= "1010101";
+		
+		--for i in 1 to txt_len loo
+		i := 1;
+		-- OBS: os displays leem a string de tras p/ frente.
+		while i <= txt_len loop
 			CASE txt(i) IS
 				WHEN 'A' => display_code := "0001000";
-				WHEN 'L' => display_code := "1110001";
-				WHEN 'T' => display_code := "1110000";
+				WHEN 'L' => display_code := "1000111";
+				WHEN 'T' => display_code := "0000111";
 				WHEN 'U' => display_code := "1000001";
-				WHEN 'R' => display_code := "1111010";
-				WHEN 'C' => display_code := "0110001";
-				WHEN 'O' => display_code := "0000001";
+				WHEN 'R' => display_code := "0101111";
+				WHEN 'C' => display_code := "1000110"; 
+				WHEN 'O' => display_code := "1000000"; 
 				WHEN OTHERS => display_code := "1111111";
 			END CASE;
 			CASE (i - 1) IS
@@ -49,6 +54,7 @@ begin
 				WHEN 7 => HEX0 <= display_code;
 				WHEN OTHERS => HEX0 <= display_code;
 			END CASE;
+			i := i + 1;
 		end loop;
     end process;
 end set;

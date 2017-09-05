@@ -1,5 +1,5 @@
 Analysis & Synthesis report for pi_II
-Tue Sep  5 18:29:43 2017
+Tue Sep  5 19:03:41 2017
 Quartus Prime Version 16.1.0 Build 196 10/24/2016 SJ Lite Edition
 
 
@@ -48,7 +48,7 @@ agreement for further details.
 +----------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                     ;
 +------------------------------------+---------------------------------------------+
-; Analysis & Synthesis Status        ; Successful - Tue Sep  5 18:29:43 2017       ;
+; Analysis & Synthesis Status        ; Successful - Tue Sep  5 19:03:41 2017       ;
 ; Quartus Prime Version              ; 16.1.0 Build 196 10/24/2016 SJ Lite Edition ;
 ; Revision Name                      ; pi_II                                       ;
 ; Top-level Entity Name              ; pi_II                                       ;
@@ -387,7 +387,7 @@ Note: In order to hide this table in the UI and the text report file, please set
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 16.1.0 Build 196 10/24/2016 SJ Lite Edition
-    Info: Processing started: Tue Sep  5 18:29:31 2017
+    Info: Processing started: Tue Sep  5 19:03:29 2017
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off pi_II -c pi_II
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 2 of the 2 processors detected
@@ -416,10 +416,6 @@ Warning (10445): VHDL Subtype or Type Declaration warning at pi_II.vhd(88): subt
 Warning (10873): Using initial value X (don't care) for net "LEDR[8..3]" at pi_II.vhd(12) File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 12
 Info (12128): Elaborating entity "freq_divider" for hierarchy "freq_divider:uut" File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 46
 Info (12128): Elaborating entity "setDisplaysText" for hierarchy "setDisplaysText:displays" File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 51
-Warning (10492): VHDL Process Statement warning at setDisplaysText.vhd(25): signal "blink" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: /home/rgnagel/pi_II/project/setDisplaysText.vhd Line: 25
-Warning (10492): VHDL Process Statement warning at setDisplaysText.vhd(26): signal "blink" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: /home/rgnagel/pi_II/project/setDisplaysText.vhd Line: 26
-Warning (10492): VHDL Process Statement warning at setDisplaysText.vhd(27): signal "blink" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: /home/rgnagel/pi_II/project/setDisplaysText.vhd Line: 27
-Warning (10492): VHDL Process Statement warning at setDisplaysText.vhd(28): signal "blink" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: /home/rgnagel/pi_II/project/setDisplaysText.vhd Line: 28
 Warning (13024): Output pins are stuck at VCC or GND
     Warning (13410): Pin "LEDR[3]" is stuck at GND File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 12
     Warning (13410): Pin "LEDR[4]" is stuck at GND File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 12
@@ -442,17 +438,17 @@ Warning (13024): Output pins are stuck at VCC or GND
     Warning (13410): Pin "HEX1[5]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
     Warning (13410): Pin "HEX1[6]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
     Warning (13410): Pin "HEX2[3]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
+    Warning (13410): Pin "HEX3[0]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
     Warning (13410): Pin "HEX3[1]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
+    Warning (13410): Pin "HEX3[2]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
     Warning (13410): Pin "HEX3[3]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX3[4]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
     Warning (13410): Pin "HEX3[5]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX3[6]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
     Warning (13410): Pin "HEX4[0]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
     Warning (13410): Pin "HEX4[6]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX5[4]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX5[5]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX5[6]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
-    Warning (13410): Pin "HEX6[0]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
+    Warning (13410): Pin "HEX5[0]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
+    Warning (13410): Pin "HEX5[1]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
+    Warning (13410): Pin "HEX5[2]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
+    Warning (13410): Pin "HEX6[6]" is stuck at VCC File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
 Info (286030): Timing-Driven Synthesis is running
 Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
     Info (16011): Adding 0 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
@@ -463,9 +459,9 @@ Info (21057): Implemented 129 device resources after synthesis - the final resou
     Info (21058): Implemented 5 input pins
     Info (21059): Implemented 65 output pins
     Info (21061): Implemented 59 logic cells
-Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 46 warnings
+Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 42 warnings
     Info: Peak virtual memory: 975 megabytes
-    Info: Processing ended: Tue Sep  5 18:29:43 2017
+    Info: Processing ended: Tue Sep  5 19:03:41 2017
     Info: Elapsed time: 00:00:12
     Info: Total CPU time (on all processors): 00:00:28
 
