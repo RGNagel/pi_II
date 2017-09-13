@@ -1,5 +1,5 @@
 Fitter report for pi_II
-Tue Sep  5 20:24:14 2017
+Tue Sep  5 20:30:17 2017
 Quartus Prime Version 16.1.0 Build 196 10/24/2016 SJ Lite Edition
 
 
@@ -69,7 +69,7 @@ agreement for further details.
 +----------------------------------------------------------------------------------+
 ; Fitter Summary                                                                   ;
 +------------------------------------+---------------------------------------------+
-; Fitter Status                      ; Successful - Tue Sep  5 20:24:14 2017       ;
+; Fitter Status                      ; Successful - Tue Sep  5 20:30:17 2017       ;
 ; Quartus Prime Version              ; 16.1.0 Build 196 10/24/2016 SJ Lite Edition ;
 ; Revision Name                      ; pi_II                                       ;
 ; Top-level Entity Name              ; pi_II                                       ;
@@ -160,7 +160,7 @@ agreement for further details.
 ;                            ;             ;
 ; Usage by Processor         ; % Time Used ;
 ;     Processor 1            ; 100.0%      ;
-;     Processor 2            ;   0.5%      ;
+;     Processor 2            ;   0.6%      ;
 +----------------------------+-------------+
 
 
@@ -3344,10 +3344,10 @@ Warning (169177): 1 pins must meet Intel FPGA requirements for 3.3-, 3.0-, and 2
     Info (169178): Pin CLOCK_50 uses I/O standard 3.3-V LVTTL at Y2 File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 11
 Info (144001): Generated suppressed messages file /home/rgnagel/pi_II/project/output_files/pi_II.fit.smsg
 Info: Quartus Prime Fitter was successful. 0 errors, 453 warnings
-    Info: Peak virtual memory: 1341 megabytes
-    Info: Processing ended: Tue Sep  5 20:24:14 2017
-    Info: Elapsed time: 00:00:14
-    Info: Total CPU time (on all processors): 00:00:20
+    Info: Peak virtual memory: 1342 megabytes
+    Info: Processing ended: Tue Sep  5 20:30:17 2017
+    Info: Elapsed time: 00:00:15
+    Info: Total CPU time (on all processors): 00:00:21
 
 
 +----------------------------+
