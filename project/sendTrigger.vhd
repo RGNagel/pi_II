@@ -5,7 +5,7 @@ entity sendTrigger is
     Port (
         clk_in : in STD_LOGIC;
         start: in STD_LOGIC;
-		  pulse : out STD_LOGIC;
+		  pulse : out STD_LOGIC
     );
 end sendTrigger;
 
@@ -16,10 +16,10 @@ architecture Behavioral of sendTrigger is
 	 begin
 	 -- variable sending : STD_LOGIC := '0'
 	 -- not declaring 'sending' as variable because sending may be interrupted by other calls to this process
-    send: process (reset, clk_in, start) begin
+    send: process (clk_in, start) begin
 		if (start = '1') then
 			sending <= '1';
-			counter <= '0';
+			counter <= 0;
 		end if;
 		if (sending = '1') then
 			if (pulse = '0') then

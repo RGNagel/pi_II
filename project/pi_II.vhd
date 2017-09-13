@@ -9,6 +9,8 @@ ENTITY pi_II IS
 			--KEY : IN BIT_VECTOR(word_len-1 DOWNTO 0);
 			KEY: IN std_logic_vector(3 DOWNTO 0);
 			CLOCK_50 : IN std_logic;
+			EX_IO : OUT std_logic_vector(6 DOWNTO 4); -- JP4 vertical left line
+			EX_IO : IN std_logic_vector(3 DOWNTO 0); -- JP4 vertical left line
 			LEDR : OUT std_logic_vector(17 DOWNTO 0);
 			HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7 : out std_logic_vector(6 DOWNTO 0)
 			);
@@ -30,6 +32,14 @@ COMPONENT freq_divider
       reset  : in  STD_LOGIC;
       clk_out: out STD_LOGIC
     );
+END COMPONENT;
+
+COMPONENT sendTrigger
+	Port (
+	  clk_in : in STD_LOGIC;
+	  start: in STD_LOGIC;
+	  pulse : out STD_LOGIC
+	);
 END COMPONENT;
 
 CONSTANT txt_len : INTEGER := 8;
@@ -60,6 +70,20 @@ BEGIN
 		HEX6 => HEX6,
 		HEX7 => HEX7	
 	);
+	
+	COMPONENT sendTrigger
+	Port (
+	  clk_in : in STD_LOGIC;
+	  start: in STD_LOGIC;
+	  pulse : out STD_LOGIC
+	);
+	END COMPONENT;
+	st: sendTrigger PORT MAP (
+		clk_in => CLOCK_50,
+		start => KEY(2); 
+		pulse => EX_IO(6); -- pin allocated to send trigger to sensor
+	);
+	
 	PROCESS (clk_out, KEY(0), KEY(1))
 	variable txt2 : STRING(1 TO txt_len);
 	variable word_pos : INTEGER := 0;
