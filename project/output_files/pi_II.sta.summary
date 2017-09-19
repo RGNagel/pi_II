@@ -3,19 +3,19 @@ TimeQuest Timing Analyzer Summary
 ------------------------------------------------------------
 
 Type  : Slow 1200mV 85C Model Setup 'freq_divider:uut|temporal'
-Slack : -5.144
-TNS   : -351.454
+Slack : -4.649
+TNS   : -339.425
 
 Type  : Slow 1200mV 85C Model Setup 'CLOCK_50'
-Slack : -4.026
-TNS   : -53.338
-
-Type  : Slow 1200mV 85C Model Hold 'freq_divider:uut|temporal'
-Slack : 0.389
-TNS   : 0.000
+Slack : -2.957
+TNS   : -53.115
 
 Type  : Slow 1200mV 85C Model Hold 'CLOCK_50'
-Slack : 0.441
+Slack : -0.242
+TNS   : -0.242
+
+Type  : Slow 1200mV 85C Model Hold 'freq_divider:uut|temporal'
+Slack : 0.388
 TNS   : 0.000
 
 Type  : Slow 1200mV 85C Model Minimum Pulse Width 'CLOCK_50'
@@ -27,19 +27,19 @@ Slack : -1.285
 TNS   : -118.220
 
 Type  : Slow 1200mV 0C Model Setup 'freq_divider:uut|temporal'
-Slack : -4.648
-TNS   : -312.552
+Slack : -4.190
+TNS   : -301.093
 
 Type  : Slow 1200mV 0C Model Setup 'CLOCK_50'
-Slack : -3.629
-TNS   : -45.315
-
-Type  : Slow 1200mV 0C Model Hold 'freq_divider:uut|temporal'
-Slack : 0.347
-TNS   : 0.000
+Slack : -2.643
+TNS   : -45.236
 
 Type  : Slow 1200mV 0C Model Hold 'CLOCK_50'
-Slack : 0.399
+Slack : -0.197
+TNS   : -0.197
+
+Type  : Slow 1200mV 0C Model Hold 'freq_divider:uut|temporal'
+Slack : 0.340
 TNS   : 0.000
 
 Type  : Slow 1200mV 0C Model Minimum Pulse Width 'CLOCK_50'
@@ -51,24 +51,24 @@ Slack : -1.285
 TNS   : -118.220
 
 Type  : Fast 1200mV 0C Model Setup 'freq_divider:uut|temporal'
-Slack : -2.016
-TNS   : -124.893
+Slack : -1.699
+TNS   : -120.383
 
 Type  : Fast 1200mV 0C Model Setup 'CLOCK_50'
-Slack : -1.573
-TNS   : -12.999
-
-Type  : Fast 1200mV 0C Model Hold 'freq_divider:uut|temporal'
-Slack : 0.179
-TNS   : 0.000
+Slack : -0.963
+TNS   : -12.890
 
 Type  : Fast 1200mV 0C Model Hold 'CLOCK_50'
-Slack : 0.199
+Slack : -0.290
+TNS   : -0.290
+
+Type  : Fast 1200mV 0C Model Hold 'freq_divider:uut|temporal'
+Slack : 0.175
 TNS   : 0.000
 
 Type  : Fast 1200mV 0C Model Minimum Pulse Width 'CLOCK_50'
 Slack : -3.000
-TNS   : -37.898
+TNS   : -37.918
 
 Type  : Fast 1200mV 0C Model Minimum Pulse Width 'freq_divider:uut|temporal'
 Slack : -1.000
