@@ -11,6 +11,7 @@ entity setDisplaysText is
 	GENERIC(txt_len : INTEGER := 8); -- nº de displays/letras
 	Port (
 		  txt : in STRING(1 TO txt_len);
+
 		  HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7 : out std_logic_vector(6 DOWNTO 0)
    );
 end setDisplaysText;
@@ -45,6 +46,7 @@ begin
 				WHEN 'O' => display_code := "1000000"; 
 				WHEN OTHERS => display_code := "1111111";
 			END CASE;
+			
 			CASE (i - 1) IS
 				WHEN 0 => HEX7 <= display_code;
 				WHEN 1 => HEX6 <= display_code;
@@ -58,5 +60,9 @@ begin
 			END CASE;
 			i := i + 1;
 		end loop;
+		
+
+		
+		
     end process;
 end set;

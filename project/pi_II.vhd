@@ -24,6 +24,15 @@ COMPONENT setDisplaysText
    );
 END COMPONENT;
 
+COMPONENT sensorultrassom 
+	PORT(
+			CLOCK_50 : IN std_logic;
+			ECHO: IN STD_logic;
+			TRIG: OUT std_logic;
+			DIST: OUT std_logic_vector (15 downto 0)
+			);
+END COMPONENT;
+
 COMPONENT freq_divider
 	PORT(
       clk_in : in STD_LOGIC;
@@ -37,6 +46,9 @@ CONSTANT txt_len : INTEGER := 8;
 SIGNAL reset   : std_logic := '0';
 SIGNAL clk_out : std_logic;
 SIGNAL txt : STRING(1 TO txt_len);
+SIGNAL TRIG : STD_LOGIC;
+SIGNAL ECHO : STD_LOGIC;
+SIGNAL DIST: std_logic_vector (15 downto 0);
 
 TYPE menu IS (COR, ALTURA);
 SIGNAL opcao: menu;
@@ -60,6 +72,15 @@ BEGIN
 		HEX6 => HEX6,
 		HEX7 => HEX7	
 	);
+	sensorultrassonico: sensorultrassom
+	PORT MAP(
+		CLOCK_50 => CLOCK_50,
+		ECHO => ECHO,
+		TRIG => TRIG,
+		DIST => DIST	
+	);
+
+	
 	PROCESS (clk_out, KEY(0), KEY(1))
 	variable txt2 : STRING(1 TO txt_len);
 	variable word_pos : INTEGER := 0;
@@ -118,6 +139,12 @@ BEGIN
 				txt <= txt2;
 			END IF;
 		END IF;
+		
+		
+		
+		
+		
+		
 	END PROCESS;
 
 END interface;
