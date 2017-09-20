@@ -25,7 +25,7 @@ COMPONENT setDisplaysText
 		  HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7 : out std_logic_vector(6 DOWNTO 0)
    );
 END COMPONENT;
-
+	
 COMPONENT freq_divider
 	PORT(
       clk_in : in STD_LOGIC;

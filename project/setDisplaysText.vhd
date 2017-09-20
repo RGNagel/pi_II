@@ -4,6 +4,7 @@
 -- os displays da placas sao anodos comum: enviar 0 p/ acender led
 
 
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
