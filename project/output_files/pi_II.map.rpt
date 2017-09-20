@@ -1,5 +1,5 @@
 Analysis & Synthesis report for pi_II
-Wed Sep 13 11:09:52 2017
+Wed Sep 20 11:33:16 2017
 Quartus Prime Version 16.1.0 Build 196 10/24/2016 SJ Lite Edition
 
 
@@ -37,7 +37,7 @@ agreement for further details.
 +----------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                     ;
 +------------------------------------+---------------------------------------------+
-; Analysis & Synthesis Status        ; Failed - Wed Sep 13 11:09:52 2017           ;
+; Analysis & Synthesis Status        ; Failed - Wed Sep 20 11:33:16 2017           ;
 ; Quartus Prime Version              ; 16.1.0 Build 196 10/24/2016 SJ Lite Edition ;
 ; Revision Name                      ; pi_II                                       ;
 ; Top-level Entity Name              ; pi_II                                       ;
@@ -162,12 +162,12 @@ agreement for further details.
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 16.1.0 Build 196 10/24/2016 SJ Lite Edition
-    Info: Processing started: Wed Sep 13 11:09:41 2017
+    Info: Processing started: Wed Sep 20 11:33:05 2017
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off pi_II -c pi_II
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 2 of the 2 processors detected
 Info (12021): Found 2 design units, including 1 entities, in source file pi_II.vhd
-    Info (12022): Found design unit 1: pi_II-interface File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 17
+    Info (12022): Found design unit 1: pi_II-interface File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 19
     Info (12023): Found entity 1: pi_II File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 6
 Info (12021): Found 2 design units, including 1 entities, in source file translate.vhd
     Info (12022): Found design unit 1: translate-letterTo7Bits File: /home/rgnagel/pi_II/project/translate.vhd Line: 6
@@ -181,17 +181,16 @@ Info (12021): Found 2 design units, including 1 entities, in source file freq_di
     Info (12022): Found design unit 1: freq_divider-Behavioral File: /home/rgnagel/pi_II/project/freq_divider.vhd Line: 13
     Info (12023): Found entity 1: freq_divider File: /home/rgnagel/pi_II/project/freq_divider.vhd Line: 5
 Info (12021): Found 2 design units, including 1 entities, in source file setDisplaysText.vhd
-    Info (12022): Found design unit 1: setDisplaysText-set File: /home/rgnagel/pi_II/project/setDisplaysText.vhd Line: 18
-    Info (12023): Found entity 1: setDisplaysText File: /home/rgnagel/pi_II/project/setDisplaysText.vhd Line: 10
+    Info (12022): Found design unit 1: setDisplaysText-set File: /home/rgnagel/pi_II/project/setDisplaysText.vhd Line: 19
+    Info (12023): Found entity 1: setDisplaysText File: /home/rgnagel/pi_II/project/setDisplaysText.vhd Line: 11
 Info (12021): Found 2 design units, including 1 entities, in source file sendTrigger.vhd
     Info (12022): Found design unit 1: sendTrigger-Behavioral File: /home/rgnagel/pi_II/project/sendTrigger.vhd Line: 12
     Info (12023): Found entity 1: sendTrigger File: /home/rgnagel/pi_II/project/sendTrigger.vhd Line: 4
-Error (10316): VHDL error at sendTrigger.vhd(22): character ''0'' used but not declared for type "integer" File: /home/rgnagel/pi_II/project/sendTrigger.vhd Line: 22
-Error (10482): VHDL error at sendTrigger.vhd(19): object "reset" is used but not declared File: /home/rgnagel/pi_II/project/sendTrigger.vhd Line: 19
-Error: Quartus Prime Analysis & Synthesis was unsuccessful. 2 errors, 1 warning
-    Error: Peak virtual memory: 948 megabytes
-    Error: Processing ended: Wed Sep 13 11:09:52 2017
-    Error: Elapsed time: 00:00:11
+Error (10465): VHDL error at pi_II.vhd(13): name "EX_IO" cannot be used because it is already used for a previously declared item File: /home/rgnagel/pi_II/project/pi_II.vhd Line: 13
+Error: Quartus Prime Analysis & Synthesis was unsuccessful. 1 error, 1 warning
+    Error: Peak virtual memory: 947 megabytes
+    Error: Processing ended: Wed Sep 20 11:33:17 2017
+    Error: Elapsed time: 00:00:12
     Error: Total CPU time (on all processors): 00:00:26
 
 

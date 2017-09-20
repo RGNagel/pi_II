@@ -71,17 +71,10 @@ BEGIN
 		HEX7 => HEX7	
 	);
 	
-	COMPONENT sendTrigger
-	Port (
-	  clk_in : in STD_LOGIC;
-	  start: in STD_LOGIC;
-	  pulse : out STD_LOGIC
-	);
-	END COMPONENT;
 	st: sendTrigger PORT MAP (
 		clk_in => CLOCK_50,
-		start => KEY(2); 
-		pulse => EX_IO(6); -- pin allocated to send trigger to sensor
+		start => KEY(2),
+		pulse => EX_IO(6) -- pin allocated to send trigger to sensor
 	);
 	
 	PROCESS (clk_out, KEY(0), KEY(1))
