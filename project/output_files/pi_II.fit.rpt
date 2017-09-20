@@ -1,5 +1,5 @@
 Fitter report for pi_II
-Tue Sep 19 14:16:40 2017
+Wed Sep 20 10:42:30 2017
 Quartus II 64-Bit Version 13.1.0 Build 162 10/23/2013 SJ Web Edition
 
 
@@ -69,7 +69,7 @@ applicable agreement for further details.
 +---------------------------------------------------------------------------------+
 ; Fitter Summary                                                                  ;
 +------------------------------------+--------------------------------------------+
-; Fitter Status                      ; Successful - Tue Sep 19 14:16:40 2017      ;
+; Fitter Status                      ; Successful - Wed Sep 20 10:42:30 2017      ;
 ; Quartus II 64-Bit Version          ; 13.1.0 Build 162 10/23/2013 SJ Web Edition ;
 ; Revision Name                      ; pi_II                                      ;
 ; Top-level Entity Name              ; pi_II                                      ;
@@ -154,12 +154,12 @@ applicable agreement for further details.
 ; Number detected on machine ; 4           ;
 ; Maximum allowed            ; 2           ;
 ;                            ;             ;
-; Average used               ; 1.24        ;
+; Average used               ; 1.27        ;
 ; Maximum used               ; 2           ;
 ;                            ;             ;
 ; Usage by Processor         ; % Time Used ;
 ;     Processor 1            ; 100.0%      ;
-;     Processor 2            ;  23.8%      ;
+;     Processor 2            ;  27.3%      ;
 ;     Processors 3-4         ;   0.0%      ;
 +----------------------------+-------------+
 
@@ -3917,7 +3917,7 @@ Info (170195): Router estimated average interconnect usage is 0% of the availabl
 Info (170194): Fitter routing operations ending: elapsed time is 00:00:02
 Info (170199): The Fitter performed an Auto Fit compilation.  Optimizations were skipped to reduce compilation time.
     Info (170201): Optimizations that may affect the design's routability were skipped
-Info (11888): Total time spent on timing analysis during the Fitter is 0.53 seconds.
+Info (11888): Total time spent on timing analysis during the Fitter is 0.51 seconds.
 Info (334003): Started post-fitting delay annotation
 Info (334004): Delay annotation completed successfully
 Info (334003): Started post-fitting delay annotation
@@ -3928,9 +3928,9 @@ Warning (169177): 1 pins must meet Altera requirements for 3.3-, 3.0-, and 2.5-V
     Info (169178): Pin CLOCK_50 uses I/O standard 3.3-V LVTTL at Y2
 Info (144001): Generated suppressed messages file C:/Users/Francisco/Desktop/pi_II/project/output_files/pi_II.fit.smsg
 Info: Quartus II 64-Bit Fitter was successful. 0 errors, 452 warnings
-    Info: Peak virtual memory: 1131 megabytes
-    Info: Processing ended: Tue Sep 19 14:16:41 2017
-    Info: Elapsed time: 00:00:23
+    Info: Peak virtual memory: 1134 megabytes
+    Info: Processing ended: Wed Sep 20 10:42:31 2017
+    Info: Elapsed time: 00:00:24
     Info: Total CPU time (on all processors): 00:00:27
 
 

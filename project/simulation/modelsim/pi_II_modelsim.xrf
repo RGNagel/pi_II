@@ -32,6 +32,7 @@ source_file = 1, C:/Users/Francisco/Desktop/pi_II/project/output_files/Chain30.c
 source_file = 1, C:/Users/Francisco/Desktop/pi_II/project/output_files/Chain31.cdf
 source_file = 1, C:/Users/Francisco/Desktop/pi_II/project/output_files/Chain33.cdf
 source_file = 1, C:/Users/Francisco/Desktop/pi_II/project/sensorultrassom.vhd
+source_file = 1, C:/Users/Francisco/Desktop/pi_II/project/readTrigger.vhd
 source_file = 1, C:/Users/Francisco/Desktop/pi_II/project/db/pi_II.cbx.xml
 source_file = 1, c:/altera/13.1/quartus/libraries/vhdl/ieee/prmtvs_b.vhd
 source_file = 1, c:/altera/13.1/quartus/libraries/vhdl/ieee/prmtvs_p.vhd

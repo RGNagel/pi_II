@@ -143,8 +143,6 @@ BEGIN
 		
 		
 		
-		
-		
 	END PROCESS;
 
 END interface;

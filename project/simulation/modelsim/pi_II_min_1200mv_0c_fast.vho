@@ -16,7 +16,7 @@
 -- PROGRAM "Quartus II 64-Bit"
 -- VERSION "Version 13.1.0 Build 162 10/23/2013 SJ Web Edition"
 
--- DATE "09/19/2017 14:16:56"
+-- DATE "09/20/2017 10:42:48"
 
 -- 
 -- Device: Altera EP4CE115F29C7 Package FBGA780
@@ -37,15 +37,15 @@ ENTITY 	pi_II IS
     PORT (
 	KEY : IN std_logic_vector(3 DOWNTO 0);
 	CLOCK_50 : IN std_logic;
-	LEDR : BUFFER std_logic_vector(17 DOWNTO 0);
-	HEX0 : BUFFER std_logic_vector(6 DOWNTO 0);
-	HEX1 : BUFFER std_logic_vector(6 DOWNTO 0);
-	HEX2 : BUFFER std_logic_vector(6 DOWNTO 0);
-	HEX3 : BUFFER std_logic_vector(6 DOWNTO 0);
-	HEX4 : BUFFER std_logic_vector(6 DOWNTO 0);
-	HEX5 : BUFFER std_logic_vector(6 DOWNTO 0);
-	HEX6 : BUFFER std_logic_vector(6 DOWNTO 0);
-	HEX7 : BUFFER std_logic_vector(6 DOWNTO 0)
+	LEDR : OUT std_logic_vector(17 DOWNTO 0);
+	HEX0 : OUT std_logic_vector(6 DOWNTO 0);
+	HEX1 : OUT std_logic_vector(6 DOWNTO 0);
+	HEX2 : OUT std_logic_vector(6 DOWNTO 0);
+	HEX3 : OUT std_logic_vector(6 DOWNTO 0);
+	HEX4 : OUT std_logic_vector(6 DOWNTO 0);
+	HEX5 : OUT std_logic_vector(6 DOWNTO 0);
+	HEX6 : OUT std_logic_vector(6 DOWNTO 0);
+	HEX7 : OUT std_logic_vector(6 DOWNTO 0)
 	);
 END pi_II;
 
