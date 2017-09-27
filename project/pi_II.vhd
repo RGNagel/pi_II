@@ -24,11 +24,11 @@ COMPONENT setDisplaysText
    );
 END COMPONENT;
 
-COMPONENT sensorultrassom 
+COMPONENT readTrigger
 	PORT(
-			CLOCK_50 : IN std_logic;
+			CLOCK_50: IN std_logic;
 			ECHO: IN STD_logic;
-			TRIG: OUT std_logic;
+			TRIG: IN std_logic;
 			DIST: OUT std_logic_vector (15 downto 0)
 			);
 END COMPONENT;
@@ -72,7 +72,7 @@ BEGIN
 		HEX6 => HEX6,
 		HEX7 => HEX7	
 	);
-	sensorultrassonico: sensorultrassom
+	rTrigger: readTrigger
 	PORT MAP(
 		CLOCK_50 => CLOCK_50,
 		ECHO => ECHO,
