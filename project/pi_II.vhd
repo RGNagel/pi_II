@@ -74,7 +74,7 @@ begin
   st : sendTrigger port map (
     clk_in => CLOCK_50,
     start  => KEY(2),
-    pulse  => EX_IO(6)  -- pin allocated to send trigger to sensor
+    pulse  => EX_IO(3)  -- pin allocated to send trigger to sensor
     );
   -- KEY(2) IS FOR TRIGGING sendTrigger to sensor.
   process (clk_out, KEY(0), KEY(1), KEY(2))
