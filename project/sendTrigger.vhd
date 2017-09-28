@@ -19,9 +19,14 @@ begin
   send : process (clk_in, start)
   begin
     if rising_edge(clk_in) then
-      if (start = '0' AND clicked = '0') then -- if TRUE. OBS.: keys in the board send '0' as CLICKED.
-        sending <= '1'; -- this variable starts the pulse for 10us.
-        counter <= 0;
+		-- KEYS in the board send '0' as HIGH.
+      if (start = '0' AND clicked = '0') then
+			-- It will enter here just in start of the pulse.
+			clicked <= '1';
+			sending <= '1'; -- this variable starts the pulse for 10us.
+			counter <= 0;
+		elsif (start = '1') then -- it will disable PULSE UP FOR MORE THAN 10us if user is HOLDING TRIGGER KEY UP.
+			clicked <= '0';
       end if;
       if (sending = '1') then
         pulse <= '1'; -- keep PULSE UP.
