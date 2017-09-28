@@ -76,14 +76,12 @@ begin
     start  => KEY(2),
     pulse  => EX_IO(3)  -- pin allocated to send trigger to sensor
     );
-  -- KEY(2) IS FOR TRIGGING sendTrigger to sensor.
   process (clk_out, KEY(0), KEY(1), KEY(2))
     variable txt2               : string(1 to txt_len);
     variable word_pos           : integer := 0;
     variable first_cycle, blink : std_logic;
   begin
     if rising_edge(clk_out) then
-
       -- pisca pisca p/ debug do clock
       blink    := not(blink);
       LEDR(17) <= blink;

@@ -24,14 +24,14 @@ begin
       end if;
       if (sending = '1') then
         pulse <= '0';
-      else                              -- just for making sure it is '1'
-        pulse <= '1';
+      else                              
+        pulse <= '1'; -- just for making sure it is '1'. Zero as output
       end if;
       counter <= counter + 1;
       if (counter = 500/2 - 1) then
         counter <= 0;
-        sending <= '0';
-        pulse   <= '0';
+        sending <= '0'; -- stop trigger
+        pulse   <= '1'; -- stop trigger
       end if;
     end if;  -- end rising_edge
   end process;
