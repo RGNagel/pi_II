@@ -1,7 +1,7 @@
 #ignore everything
 *
-
 #but not these files
+!project/
 !.gitignore
 !README.md
 !project/*.vhd
