@@ -3,8 +3,8 @@ JedecChain;
 	FileRevision(JESD32A);
 	DefaultMfr(6E);
 
-	P ActionCode(Cfg)
-		Device PartName(EP4CE115F29) Path("/home/rgnagel/Dropbox/IFSC/PI_II/project/output_files/") File("pi_II.sof") MfrSpec(OpMask(1));
+	P ActionCode(Ign)
+		Device PartName(EP4CE115) MfrSpec(OpMask(0));
 
 ChainEnd;
 

@@ -1,14 +1,14 @@
-Analysis & Synthesis Status : Failed - Wed Sep 20 11:33:16 2017
+Analysis & Synthesis Status : Successful - Wed Sep 27 11:29:00 2017
 Quartus Prime Version : 16.1.0 Build 196 10/24/2016 SJ Lite Edition
 Revision Name : pi_II
 Top-level Entity Name : pi_II
 Family : Cyclone IV E
-Total logic elements : N/A until Partition Merge
-    Total combinational functions : N/A until Partition Merge
-    Dedicated logic registers : N/A until Partition Merge
-Total registers : N/A until Partition Merge
-Total pins : N/A until Partition Merge
-Total virtual pins : N/A until Partition Merge
-Total memory bits : N/A until Partition Merge
-Embedded Multiplier 9-bit elements : N/A until Partition Merge
-Total PLLs : N/A until Partition Merge
+Total logic elements : 384
+    Total combinational functions : 384
+    Dedicated logic registers : 119
+Total registers : 119
+Total pins : 86
+Total virtual pins : 0
+Total memory bits : 0
+Embedded Multiplier 9-bit elements : 0
+Total PLLs : 0

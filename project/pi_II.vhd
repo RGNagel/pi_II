@@ -9,8 +9,8 @@ ENTITY pi_II IS
 			--KEY : IN BIT_VECTOR(word_len-1 DOWNTO 0);
 			KEY: IN std_logic_vector(3 DOWNTO 0);
 			CLOCK_50 : IN std_logic;
-			EX_IO : OUT std_logic_vector(6 DOWNTO 4); -- JP4 vertical left line
-			EX_IO : IN std_logic_vector(3 DOWNTO 0); -- JP4 vertical left line
+			EX_IO : OUT std_logic_vector(6 DOWNTO 0); -- JP4 vertical left line
+			-- EX_IO : IN std_logic_vector(3 DOWNTO 0); -- JP4 vertical left line
 			LEDR : OUT std_logic_vector(17 DOWNTO 0);
 			HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7 : out std_logic_vector(6 DOWNTO 0)
 			);
@@ -47,6 +47,7 @@ CONSTANT txt_len : INTEGER := 8;
 SIGNAL reset   : std_logic := '0';
 SIGNAL clk_out : std_logic;
 SIGNAL txt : STRING(1 TO txt_len);
+--SIGNAL triggerSensor : std_logic := '0';
 
 TYPE menu IS (COR, ALTURA);
 SIGNAL opcao: menu;
@@ -68,7 +69,7 @@ BEGIN
 		HEX4 => HEX4,
 		HEX5 => HEX5,
 		HEX6 => HEX6,
-		HEX7 => HEX7	
+		HEX7 => HEX7
 	);
 	
 	st: sendTrigger PORT MAP (
@@ -76,8 +77,8 @@ BEGIN
 		start => KEY(2),
 		pulse => EX_IO(6) -- pin allocated to send trigger to sensor
 	);
-	
-	PROCESS (clk_out, KEY(0), KEY(1))
+	-- KEY(2) IS FOR TRIGGING sendTrigger to sensor.
+	PROCESS (clk_out, KEY(0), KEY(1), KEY(2))
 	variable txt2 : STRING(1 TO txt_len);
 	variable word_pos : INTEGER := 0;
 	variable first_cycle, blink : std_logic;
@@ -134,7 +135,7 @@ BEGIN
 				end loop;
 				txt <= txt2;
 			END IF;
-		END IF;
+		END IF; -- end rising_edge
 	END PROCESS;
 
 END interface;
