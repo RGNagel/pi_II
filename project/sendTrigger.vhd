@@ -23,25 +23,31 @@ begin
   send : process (clk_in, start)
   begin
     if rising_edge(clk_in) then
+	 
 		-- KEYS in the board send '0' as HIGH.
       if (start = '0' AND clicked = '0') then
 			-- It will enter here just in start of the pulse.
-			clicked <= '1';
-			sending <= '1'; -- this variable starts the pulse for 10us.
+			clicked <= '1'; -- it will disable PULSE UP FOR MORE THAN 10us if user is HOLDING TRIGGER KEY UP
+			pulse <= '1';
 			counter <= 0;
+			
+		-- after releasing button/key
 		elsif (start = '1') then -- it will disable PULSE UP FOR MORE THAN 10us if user is HOLDING TRIGGER KEY UP.
 			clicked <= '0';
       end if;
-      if (sending = '1') then
-        pulse <= '1'; -- keep PULSE UP.
-      else                              
-        pulse <= '0'; -- just for making sure it it DOWN. PULSE DOWN.
-      end if;
+		
       counter <= counter + 1;
-      if (counter = 500/2 - 1) then
+      
+		-- SCALE/MOD = Freq_IN / FREQ_OUT; freq_in = 50MHz, freq_out = 1 / 20us
+		if (counter = 1000 - 1) then
+			if (start = '1') then
+					clicked <= '0'; -- it will enable again PULSE UP for sending pulse
+			end if;
         counter <= 0;
-        sending <= '0'; -- stop trigger
+		  pulse <= '0';
       end if;
+		
     end if;  -- end rising_edge
+	 
   end process;
 end Behavioral;
