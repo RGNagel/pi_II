@@ -13,6 +13,10 @@ architecture Behavioral of sendTrigger is
   signal counter : integer range 0 to 50000000 := 0;
   signal sending : std_logic                   := '0';
   signal clicked : std_logic := '0'; -- variable to make sure trigger does not keep up after 10us
+  
+  --type menu is (COR, ALTURA);
+  --signal opcao : menu;
+  
 begin
   -- not declaring 'sending' as variable because sending may be interrupted by other calls to this process
   -- variable sending : STD_LOGIC := '0'
