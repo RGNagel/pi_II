@@ -46,7 +46,6 @@ architecture interface of pi_II is
     port(
       CLOCK_50 : in  std_logic;
       ECHO     : in  std_logic;                      -- response from sensor
-      TRIG     : in  std_logic;                      -- 10 us to be sent
       DIST     : out std_logic_vector (15 downto 0)  -- measured distance
       );
   end component;
@@ -87,13 +86,13 @@ begin
     start  => KEY(2),
     pulse  => EX_IO(3)  -- pin allocated to send generate pulse trigger to sensor.
     );
-  rTrigger : readTrigger
-    port map(
+	 
+  rTrigger : readTrigger port map(
       CLOCK_50 => CLOCK_50,
       ECHO     => EX_IO(2),  -- here we receive signal pulse from sensor
-      TRIG     => TRIG,
       DIST     => DIST
       );
+		
   process (clk_out, KEY(0), KEY(1), KEY(2))
     variable txt2               : string(1 to txt_len);
     variable word_pos           : integer := 0;
