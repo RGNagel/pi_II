@@ -19,6 +19,7 @@ BEGIN
 		WHEN 'C' => display_code <= "1101001";
 		WHEN 'O' => display_code <= "1101001";
 		WHEN '-' => display_code <= "0000000"; 
+		
 	END CASE;
 	END PROCESS;
 END letterTo7Bits;

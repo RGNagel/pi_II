@@ -1,12 +1,9 @@
--- ENTITY FOR CLICK SENSIBILITY
-
 library ieee;
 use ieee.std_logic_1164.all;
 
 entity pi_II is
   generic(word_len : integer := 8);     -- nº de letras da palavra
   port(
-    --KEY : IN BIT_VECTOR(word_len-1 DOWNTO 0);
     KEY                                            : in    std_logic_vector(3 downto 0);
     CLOCK_50                                       : in    std_logic;
     -- EX_IO reference: DE2_115_User_manual.pdf (page 52/122)
@@ -18,7 +15,7 @@ end pi_II;
 
 architecture interface of pi_II is
   component setDisplaysText
-    generic(txt_len : integer := 8);    -- nº de displays/letras
+    generic (txt_len : integer := 8);    -- nº de displays/letras
     port (
       txt                                            : in  string(1 to txt_len);
       HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7 : out std_logic_vector(6 downto 0)
@@ -38,11 +35,10 @@ architecture interface of pi_II is
       pulse  : out std_logic
       );
   end component;
-  component readTrigger
+  component readEcho
     port(
       CLOCK_50 : in  std_logic;
       ECHO     : in  std_logic;                      -- response from sensor
-      TRIG     : in  std_logic;                      -- 10 us to be sent
       DIST     : out std_logic_vector (15 downto 0)  -- measured distance
       );
   end component;
@@ -53,8 +49,7 @@ architecture interface of pi_II is
          );
   end component;
   constant txt_len : integer := 8;
-  signal start_trigger : std_logic;
-  signal triggerButton : std_logic;
+  signal start_trigger : std_logic := '1';
   signal reset   : std_logic := '0';
   signal clk_out : std_logic;
   signal txt     : string(1 to txt_len);
@@ -93,11 +88,10 @@ begin
 		start  => start_trigger,
 		pulse  => EX_IO(3)
     );
-  rTrigger : readTrigger
-    port map(
+  rTrigger : readEcho
+    port map (
       CLOCK_50 => CLOCK_50,
       ECHO     => EX_IO(4),  -- here we receive signal pulse from sensor
-      TRIG     => TRIG,
       DIST     => DIST
     );
   process (clk_out, KEY(0), KEY(1), KEY(2))
@@ -109,6 +103,7 @@ begin
       -- pisca pisca p/ debug do clock
       blink    := not(blink);
       LEDR(17) <= blink;
+      
       if KEY(0) = '0' then
         opcao       <= COR;
         txt         <= "--------";

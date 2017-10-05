@@ -4,7 +4,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-ENTITY readTrigger IS
+ENTITY readEcho IS
 	
 	PORT(
 			CLOCK_50: IN std_logic;
@@ -12,9 +12,9 @@ ENTITY readTrigger IS
 			DIST: OUT std_logic_vector (15 downto 0)
 			);
 	
-END readTrigger;
+END readEcho;
 
-ARCHITECTURE interface OF readTrigger IS
+ARCHITECTURE interface OF readEcho IS
 	
 	SIGNAL	estado: integer range 0 to 2;
 	SIGNAL	tcontador: integer range 0 to 1000000000;
@@ -40,15 +40,12 @@ BEGIN
 					IF ECHO = '0' THEN
 						estado <= 2;
 					END IF;
-					
 				WHEN 2 =>
 					DIST <= std_logic_vector(to_unsigned(tcontador/2900, 16));
 					estado <= 0;				
-			
 			END CASE;
 		END IF;
 	echoevent <= ECHO;
 	END PROCESS;
-
 
 END ;
