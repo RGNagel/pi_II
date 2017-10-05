@@ -17,7 +17,6 @@ entity pi_II is
 end pi_II;
 
 architecture interface of pi_II is
-
   component setDisplaysText
     generic(txt_len : integer := 8);    -- nº de displays/letras
     port (
@@ -25,7 +24,6 @@ architecture interface of pi_II is
       HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7 : out std_logic_vector(6 downto 0)
       );
   end component;
-
   component freq_divider
     port(
       clk_in  : in  std_logic;
@@ -33,7 +31,6 @@ architecture interface of pi_II is
       clk_out : out std_logic
       );
   end component;
-
   component sendTrigger
     port (
       clk_in : in  std_logic;
@@ -41,7 +38,6 @@ architecture interface of pi_II is
       pulse  : out std_logic
       );
   end component;
-
   component readTrigger
     port(
       CLOCK_50 : in  std_logic;
@@ -50,25 +46,29 @@ architecture interface of pi_II is
       DIST     : out std_logic_vector (15 downto 0)  -- measured distance
       );
   end component;
-
+  component debouncer_pi
+    port(clockIn   : in  std_logic;
+         buttonIn  : in  std_logic;
+         buttonOut : out std_logic
+         );
+  end component;
   constant txt_len : integer := 8;
-
+  signal start_trigger : std_logic;
+  signal triggerButton : std_logic;
   signal reset   : std_logic := '0';
   signal clk_out : std_logic;
   signal txt     : string(1 to txt_len);
   signal TRIG    : std_logic := '0';
   signal ECHO    : std_logic;           -- signal response from sensor
   signal DIST    : std_logic_vector (15 downto 0);  -- measured distance
-
   type menu is (COR, ALTURA);
   signal opcao : menu;
-
 begin
   uut : freq_divider port map (
     clk_in  => CLOCK_50,
     reset   => reset,
     clk_out => clk_out
-    );
+  );
   displays : setDisplaysText
     generic map (txt_len => txt_len)
     port map (
@@ -81,19 +81,25 @@ begin
       HEX5 => HEX5,
       HEX6 => HEX6,
       HEX7 => HEX7
-      );
+  );
+  debouncer : debouncer_pi
+    port map (
+      clockIn => CLOCK_50,
+      buttonIn => KEY(2),
+      buttonOut => start_trigger -- DOWN
+    );
   st : sendTrigger port map (
-    clk_in => CLOCK_50,
-    start  => KEY(2),
-    pulse  => EX_IO(3)  -- pin allocated to send generate pulse trigger to sensor.
+		clk_in => CLOCK_50,
+		start  => start_trigger,
+		pulse  => EX_IO(3)
     );
   rTrigger : readTrigger
     port map(
       CLOCK_50 => CLOCK_50,
-      ECHO     => EX_IO(2),  -- here we receive signal pulse from sensor
+      ECHO     => EX_IO(4),  -- here we receive signal pulse from sensor
       TRIG     => TRIG,
       DIST     => DIST
-      );
+    );
   process (clk_out, KEY(0), KEY(1), KEY(2))
     variable txt2               : string(1 to txt_len);
     variable word_pos           : integer := 0;
@@ -103,7 +109,6 @@ begin
       -- pisca pisca p/ debug do clock
       blink    := not(blink);
       LEDR(17) <= blink;
-
       if KEY(0) = '0' then
         opcao       <= COR;
         txt         <= "--------";

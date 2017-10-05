@@ -9,13 +9,14 @@ entity debouncer_pi is
   port(clockIn   : in  std_logic;
        buttonIn  : in  std_logic;
        buttonOut : out std_logic
-       );
+		);
 end;
 
 architecture behavior of debouncer_pi is
   signal buttonAux     : std_logic := '0';
   signal buttonPressed : std_logic := '0';
   constant CONT_MAX    : integer   := ((freqIn/ 1000) * delay) - 1;
+  
 begin
   buttonAux <= buttonIn when defaultState = '0' else (not buttonIn);
   process(clockIn)
