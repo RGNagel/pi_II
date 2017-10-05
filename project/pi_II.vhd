@@ -1,6 +1,7 @@
 -- ENTITY FOR CLICK SENSIBILITY
 
 library ieee;
+use ieee.numeric_std.all;
 use ieee.std_logic_1164.all;
 
 entity pi_II is
@@ -97,6 +98,7 @@ begin
     variable txt2               : string(1 to txt_len);
     variable word_pos           : integer := 0;
     variable first_cycle, blink : std_logic;
+	 variable distancia			  : integer;
   begin
     if rising_edge(clk_out) then
       -- pisca pisca p/ debug do clock
@@ -150,5 +152,9 @@ begin
         txt <= txt2;
       end if;
     end if;  -- end rising_edge
+	 distancia := to_integer(unsigned(DIST));
+	 
+	 
+	 
   end process;
 end interface;

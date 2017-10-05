@@ -47,7 +47,6 @@ BEGIN
 			
 			END CASE;
 		END IF;
-	
 	echoevent <= ECHO;
 	END PROCESS;
 
