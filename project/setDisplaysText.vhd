@@ -55,9 +55,7 @@ begin
 				WHEN '7' => display_code := "1111000"; -- nr 7
 				WHEN '8' => display_code := "0000000"; -- nr 8
 				WHEN '9' => display_code := "0011000"; -- nr 9
-				
-				
-				
+				WHEN ',' => display_code := "1111011";
 				WHEN OTHERS => display_code := "1111111";
 			END CASE;
 			

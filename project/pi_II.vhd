@@ -1,5 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.std_logic_textio.all;
 
 entity pi_II is
 	generic(word_len : integer := 8);   -- nº de letras da palavra
@@ -39,7 +40,9 @@ architecture interface of pi_II is
 		port(
 			CLOCK_50 : in  std_logic;
 			ECHO     : in  std_logic;   -- response from sensor
-			DIST     : out std_logic_vector(15 downto 0) -- measured distance
+			--DIST     : out std_logic_vector(15 downto 0); -- measured distance
+			dist_int : out integer;
+			dist_dec : out integer
 		);
 	end component;
 	component debouncer_pi
@@ -55,7 +58,9 @@ architecture interface of pi_II is
 	signal txt           : string(1 to txt_len);
 	signal TRIG          : std_logic := '0';
 	signal ECHO          : std_logic;   -- signal response from sensor
-	signal DIST          : std_logic_vector(15 downto 0); -- measured distance
+	--signal DIST          : std_logic_vector(15 downto 0); -- measured distance
+	signal dist_int      : integer;
+	signal dist_dec      : integer;
 	type menu is (COR, ALTURA, ALTURA_X);
 	signal opcao         : menu;
 begin
@@ -94,12 +99,16 @@ begin
 		port map(
 			CLOCK_50 => CLOCK_50,
 			ECHO     => EX_IO(4),       -- here we receive signal pulse from sensor
-			DIST     => DIST
+			--DIST     => DIST,
+			dist_int => dist_int,
+			dist_dec => dist_dec
 		);
-	process(clk_out, KEY(0), KEY(1), KEY(2), EX_IO(4))
+	process(clk_out, KEY(0), KEY(1), KEY(2), dist_int)
 		variable txt2               : string(1 to txt_len);
 		variable word_pos           : integer := 0;
 		variable first_cycle, blink : std_logic;
+		variable x                  : integer := 0;
+		variable dist_int_2	: integer := 0;
 	begin
 		if rising_edge(clk_out) then
 			-- pisca pisca p/ debug do clock
@@ -107,23 +116,24 @@ begin
 			LEDR(17) <= blink;
 
 			if KEY(0) = '0' then
-							txt         <= "--------";
-			txt2        := "--------";
-			first_cycle := '1';
-			word_pos    := 0;
-				opcao <= COR;
+				txt         <= "--------";
+				txt2        := "--------";
+				first_cycle := '1';
+				word_pos    := 0;
+				opcao       <= COR;
 			elsif KEY(1) = '0' then
-							txt         <= "--------";
-			txt2        := "--------";
-			first_cycle := '1';
-			word_pos    := 0;
-				opcao <= ALTURA;
-			elsif EX_IO(4) = '1' then
-							txt         <= "--------";
-			txt2        := "--------";
-			first_cycle := '1';
-			word_pos    := 0;
-				opcao <= ALTURA_X;
+				txt         <= "--------";
+				txt2        := "--------";
+				first_cycle := '1';
+				word_pos    := 0;
+				opcao       <= ALTURA;
+			elsif dist_int >= 0 then
+				txt         <= "--------";
+				txt2        := "--------";
+				first_cycle := '1';
+				word_pos    := 0;
+				x           := 0;
+				opcao       <= ALTURA_X;
 			end if;
 			if first_cycle = '1' then
 				case opcao is
@@ -147,7 +157,20 @@ begin
 							when others => txt <= "--------";
 						end case;
 					when ALTURA_X =>
-							txt <= ;
+						if x = 0 then
+							txt2(txt_len)     := character'val(dist_dec);
+							txt2(txt_len - 1) := ',';
+							x                 := txt_len - 2;
+							dist_int_2 := dist_int;
+							while dist_int_2 > 0 and x > 0 loop
+								txt2(x)  := character'val(dist_int_2 rem 10);
+								dist_int_2 := dist_int_2/10;
+								x        := x - 1;
+							end loop;
+							--txt_num           <= integer'image(dist_int) & "," & integer'image(dist_dec);
+							first_cycle       := '1';
+							txt <= txt2;
+						end if;
 				end case;
 				word_pos := word_pos + 1;
 			else
