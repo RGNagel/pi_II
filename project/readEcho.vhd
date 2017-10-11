@@ -17,7 +17,7 @@ END readEcho;
 
 ARCHITECTURE interface OF readEcho IS
 	CONSTANT height : integer := 20; -- cm
-	SIGNAL estado    : integer; --range 0 to 2;
+	SIGNAL estado    : integer range 0 to 2;
 	SIGNAL tcontador : integer; --range 0 to 1000000000;
 	SIGNAL echoevent : std_logic;
 
@@ -42,9 +42,10 @@ BEGIN
 				WHEN 2 =>
 					-- distance: s = t*0.034/2, where veloc. is [cm/us]. Res.: 0.3 cm
 					-- dist := tcontador * 10**6 * 1/100**6 * 0.017; -- *10E6 for converting to us.
-					dist := tcontador*0.0017;
+					--dist := tcontador*0.0017;
+					dist := tcontador/588;
 					dist_int <= dist/10;
-					dist_dec <= dist rem 10;					
+					dist_dec <= dist rem 10;				
 					--DIST   <= std_logic_vector(to_unsigned(tcontador/2900, 16));
 					estado <= 0;
 			END CASE;

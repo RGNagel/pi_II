@@ -39,7 +39,7 @@ begin
       counter <= counter + 1;
       
 		-- SCALE/MOD = Freq_IN / FREQ_OUT; freq_in = 50MHz, freq_out = 1 / 20us
-		if (counter = 1000 - 1) then
+		if (counter = 6000 - 1) then -- 1000 - 1
 			if (start = '1') then
 					clicked <= '0'; -- it will enable again PULSE UP for sending pulse
 			end if;

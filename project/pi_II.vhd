@@ -99,7 +99,6 @@ begin
 		port map(
 			CLOCK_50 => CLOCK_50,
 			ECHO     => EX_IO(4),       -- here we receive signal pulse from sensor
-			--DIST     => DIST,
 			dist_int => dist_int,
 			dist_dec => dist_dec
 		);
@@ -127,12 +126,14 @@ begin
 				first_cycle := '1';
 				word_pos    := 0;
 				opcao       <= ALTURA;
-			elsif dist_int >= 0 then
+			elsif dist_int > 0 then
 				txt         <= "--------";
 				txt2        := "--------";
 				first_cycle := '1';
 				word_pos    := 0;
 				x           := 0;
+				dist_int <= 0;
+				dist_dec <= 0;
 				opcao       <= ALTURA_X;
 			end if;
 			if first_cycle = '1' then
