@@ -13,7 +13,6 @@ entity pi_II is
 		HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7 : out   std_logic_vector(6 downto 0)
 	);
 end pi_II;
-
 architecture interface of pi_II is
 	component setDisplaysText
 		generic(txt_len : integer := 8); -- nº de displays/letras
@@ -37,12 +36,11 @@ architecture interface of pi_II is
 		);
 	end component;
 	component readEcho
+		generic(altura_sensor : integer := 15); -- altura do sensor em relação ao objeto a ser medidor (em cm)
 		port(
-			CLOCK_50 : in  std_logic;
-			ECHO     : in  std_logic;   -- response from sensor
-			--DIST     : out std_logic_vector(15 downto 0); -- measured distance
-			dist_int : out integer;
-			dist_dec : out integer
+			CLOCK_50      : in  std_logic;
+			ECHO          : in  std_logic; -- response from sensor
+			altura_medida : out integer
 		);
 	end component;
 	component debouncer_pi
@@ -52,17 +50,16 @@ architecture interface of pi_II is
 		    );
 	end component;
 	constant txt_len     : integer   := 8;
+	constant altura_sensor : integer := 15; -- altura do sensor em cm
 	signal start_trigger : std_logic := '1';
 	signal reset         : std_logic := '0';
 	signal clk_out       : std_logic;
 	signal txt           : string(1 to txt_len);
 	signal TRIG          : std_logic := '0';
 	signal ECHO          : std_logic;   -- signal response from sensor
-	--signal DIST          : std_logic_vector(15 downto 0); -- measured distance
-	signal dist_int      : integer;
-	signal dist_dec      : integer;
-	type menu is (COR, ALTURA, ALTURA_X);
-	signal opcao         : menu;
+	signal altura_medida : integer;
+	type state is (IDLE, TXT_ALT, TXT_COR, TRIGGER_ALT, CALC_ALT, PRINT_CALC_ALT);
+
 begin
 	uut : freq_divider
 		port map(
@@ -96,49 +93,41 @@ begin
 			pulse  => EX_IO(3)
 		);
 	rTrigger : readEcho
+		generic map(altura_sensor => altura_sensor)
 		port map(
-			CLOCK_50 => CLOCK_50,
-			ECHO     => EX_IO(4),       -- here we receive signal pulse from sensor
-			dist_int => dist_int,
-			dist_dec => dist_dec
+			CLOCK_50      => CLOCK_50,
+			ECHO          => EX_IO(4),  -- here we receive signal pulse from sensor
+			altura_medida => altura_medida
 		);
 	process(clk_out, KEY(0), KEY(1), KEY(2), dist_int)
 		variable txt2               : string(1 to txt_len);
 		variable word_pos           : integer := 0;
 		variable first_cycle, blink : std_logic;
-		variable x                  : integer := 0;
-		variable dist_int_2	: integer := 0;
+
 	begin
 		if rising_edge(clk_out) then
 			-- pisca pisca p/ debug do clock
-			blink    := not (blink);
-			LEDR(17) <= blink;
-
+			blink := not (blink);
 			if KEY(0) = '0' then
 				txt         <= "--------";
 				txt2        := "--------";
 				first_cycle := '1';
 				word_pos    := 0;
-				opcao       <= COR;
+				state       <= TXT_ALT;
 			elsif KEY(1) = '0' then
 				txt         <= "--------";
 				txt2        := "--------";
 				first_cycle := '1';
 				word_pos    := 0;
-				opcao       <= ALTURA;
-			elsif dist_int > 0 then
-				txt         <= "--------";
-				txt2        := "--------";
-				first_cycle := '1';
-				word_pos    := 0;
-				x           := 0;
-				dist_int <= 0;
-				dist_dec <= 0;
-				opcao       <= ALTURA_X;
+				state       <= TXT_COR;
 			end if;
-			if first_cycle = '1' then
-				case opcao is
-					when COR =>
+			case state is
+			when IDLE =>
+				LEDR(17) <= blink;	
+					txt      <= "----IDLE";
+				when TXT_COR =>
+					LEDR(16) <= blink;
+					if first_cycle = '1' then
 						case word_pos is
 							when 0      => txt <= "-------C";
 							when 1      => txt <= "------CO";
@@ -146,7 +135,19 @@ begin
 							when 3      => first_cycle := '0';
 							when others => txt <= "--------";
 						end case;
-					when ALTURA =>
+					else
+						for i in 1 to txt_len loop
+							if i < txt_len then
+								txt2(i) := txt(i + 1);
+							else
+								txt2(i) := txt(1);
+							end if;
+						end loop;
+						txt <= txt2;
+					end if;
+				when TXT_ALT =>
+					LEDR(15) <= blink;
+					if first_cycle = '1' then
 						case word_pos is
 							when 0      => txt <= "-------A";
 							when 1      => txt <= "------AL";
@@ -157,33 +158,34 @@ begin
 							when 6      => first_cycle := '0';
 							when others => txt <= "--------";
 						end case;
-					when ALTURA_X =>
-						if x = 0 then
-							txt2(txt_len)     := character'val(dist_dec);
-							txt2(txt_len - 1) := ',';
-							x                 := txt_len - 2;
-							dist_int_2 := dist_int;
-							while dist_int_2 > 0 and x > 0 loop
-								txt2(x)  := character'val(dist_int_2 rem 10);
-								dist_int_2 := dist_int_2/10;
-								x        := x - 1;
-							end loop;
-							--txt_num           <= integer'image(dist_int) & "," & integer'image(dist_dec);
-							first_cycle       := '1';
-							txt <= txt2;
-						end if;
-				end case;
-				word_pos := word_pos + 1;
-			else
-				for i in 1 to txt_len loop
-					if i < txt_len then
-						txt2(i) := txt(i + 1);
 					else
-						txt2(i) := txt(1);
+						for i in 1 to txt_len loop
+							if i < txt_len then
+								txt2(i) := txt(i + 1);
+							else
+								txt2(i) := txt(1);
+							end if;
+						end loop;
+						txt <= txt2;
 					end if;
-				end loop;
-				txt <= txt2;
-			end if;
+				when TRIGGER_ALT =>
+					LEDR(14) <= blink;
+					if EX_IO(4) = '1' then -- começou a receber o sinal
+						state <= CALC_ALT;
+					end if;
+				when CALC_ALT =>
+					LEDR(13) <= blink;
+					if EX_IO(4) = '0' then -- parou de receber o sinal
+						state <= PRINT_CALC_ALT;
+					end if;
+				when PRINT_CALC_ALT =>
+					LEDR(12) <= blink;
+					txt2     := "--------";
+					txt2(7)  := character'val(altura_medida/10);
+					txt2(8)  := character'val(altura_medida rem 10);
+					txt      <= txt2;
+			end case;
+			word_pos := word_pos + 1;
 		end if;                         -- end rising_edge
 	end process;
 end interface;

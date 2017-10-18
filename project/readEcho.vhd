@@ -5,12 +5,11 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 ENTITY readEcho IS
+	generic(altura_sensor : integer := 15);
 	PORT(
 		CLOCK_50 : IN  std_logic;
 		ECHO     : IN  STD_logic;
-		dist_int : OUT integer;
-		dist_dec : OUT integer
-		--DIST     : OUT std_logic_vector(15 downto 0)
+		altura_medida : OUT integer
 	);
 
 END readEcho;
@@ -43,10 +42,8 @@ BEGIN
 					-- distance: s = t*0.034/2, where veloc. is [cm/us]. Res.: 0.3 cm
 					-- dist := tcontador * 10**6 * 1/100**6 * 0.017; -- *10E6 for converting to us.
 					--dist := tcontador*0.0017;
-					dist := tcontador/588;
-					dist_int <= dist/10;
-					dist_dec <= dist rem 10;				
-					--DIST   <= std_logic_vector(to_unsigned(tcontador/2900, 16));
+					altura_medida := altura_sensor - tcontador/588;
+					
 					estado <= 0;
 			END CASE;
 		END IF;
