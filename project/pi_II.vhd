@@ -49,16 +49,18 @@ architecture interface of pi_II is
 		     buttonOut : out std_logic
 		    );
 	end component;
-	constant txt_len     : integer   := 8;
-	constant altura_sensor : integer := 15; -- altura do sensor em cm
-	signal start_trigger : std_logic := '1';
-	signal reset         : std_logic := '0';
-	signal clk_out       : std_logic;
-	signal txt           : string(1 to txt_len);
-	signal TRIG          : std_logic := '0';
-	signal ECHO          : std_logic;   -- signal response from sensor
-	signal altura_medida : integer;
+	constant txt_len       : integer   := 8;
+	constant altura_sensor : integer   := 15; -- altura do sensor em cm
+	signal start_trigger   : std_logic := '1';
+	signal start_debouncer : std_logic := '1';
+	signal reset           : std_logic := '0';
+	signal clk_out         : std_logic;
+	signal txt             : string(1 to txt_len);
+	signal TRIG            : std_logic := '0';
+	signal ECHO            : std_logic; -- signal response from sensor
+	signal altura_medida   : integer;
 	type state is (IDLE, TXT_ALT, TXT_COR, TRIGGER_ALT, CALC_ALT, PRINT_CALC_ALT);
+	signal next_state      : state     := IDLE;
 
 begin
 	uut : freq_divider
@@ -83,7 +85,7 @@ begin
 	debouncer : debouncer_pi
 		port map(
 			clockIn   => CLOCK_50,
-			buttonIn  => KEY(2),
+			buttonIn  => start_debouncer,
 			buttonOut => start_trigger  -- DOWN
 		);
 	st : sendTrigger
@@ -99,34 +101,44 @@ begin
 			ECHO          => EX_IO(4),  -- here we receive signal pulse from sensor
 			altura_medida => altura_medida
 		);
-	process(clk_out, KEY(0), KEY(1), KEY(2), dist_int)
+	process(clk_out, KEY(0), KEY(1), KEY(2), KEY(3))
 		variable txt2               : string(1 to txt_len);
 		variable word_pos           : integer := 0;
 		variable first_cycle, blink : std_logic;
-
+		variable counter            : integer := 0;
+		variable print_measure      : std_logic := '0';
 	begin
 		if rising_edge(clk_out) then
 			-- pisca pisca p/ debug do clock
 			blink := not (blink);
-			if KEY(0) = '0' then
-				txt         <= "--------";
-				txt2        := "--------";
-				first_cycle := '1';
-				word_pos    := 0;
-				state       <= TXT_ALT;
-			elsif KEY(1) = '0' then
-				txt         <= "--------";
-				txt2        := "--------";
-				first_cycle := '1';
-				word_pos    := 0;
-				state       <= TXT_COR;
-			end if;
-			case state is
-			when IDLE =>
-				LEDR(17) <= blink;	
+			case next_state is
+				when IDLE =>
+					LEDR(17) <= blink;
 					txt      <= "----IDLE";
+					if KEY(0) = '0' then
+						txt         <= "--------";
+						txt2        := "--------";
+						first_cycle := '1';
+						word_pos    := 0;
+						next_state  <= TXT_ALT;
+					elsif KEY(1) = '0' then
+						txt         <= "--------";
+						txt2        := "--------";
+						first_cycle := '1';
+						word_pos    := 0;
+						next_state  <= TXT_COR;
+					end if;
 				when TXT_COR =>
 					LEDR(16) <= blink;
+					if KEY(2) = '0' then
+						txt        <= "--------";
+						txt2       := "--------";
+						next_state <= IDLE;
+					elsif KEY(3) = '0' then
+						txt        <= "--------";
+						txt2       := "--------";
+						next_state <= TRIGGER_ALT;
+					end if;
 					if first_cycle = '1' then
 						case word_pos is
 							when 0      => txt <= "-------C";
@@ -145,8 +157,18 @@ begin
 						end loop;
 						txt <= txt2;
 					end if;
+					word_pos := word_pos + 1;
 				when TXT_ALT =>
 					LEDR(15) <= blink;
+					if KEY(2) = '0' then
+						txt        <= "--------";
+						txt2       := "--------";
+						next_state <= IDLE;
+					elsif KEY(3) = '0' then
+						txt        <= "--------";
+						txt2       := "--------";
+						next_state <= TRIGGER_ALT;
+					end if;
 					if first_cycle = '1' then
 						case word_pos is
 							when 0      => txt <= "-------A";
@@ -168,24 +190,57 @@ begin
 						end loop;
 						txt <= txt2;
 					end if;
+					if print_measure = '1' then
+						if counter > 5 then
+							txt2       := "--------";
+							txt        <= "--------";
+							counter    := 0;
+							next_state <= PRINT_CALC_ALT;
+						else
+							counter := counter + 1;
+						end if;
+
+					end if;
+					word_pos := word_pos + 1;
 				when TRIGGER_ALT =>
 					LEDR(14) <= blink;
-					if EX_IO(4) = '1' then -- começou a receber o sinal
-						state <= CALC_ALT;
+					if KEY(2) = '0' AND start_debouncer = '1' then
+						next_state <= IDLE;
 					end if;
-				when CALC_ALT =>
+					if start_debouncer = '0' then
+						start_debouncer <= '1'; -- stop debouncer
+					else
+						start_debouncer <= '0';
+					end if;
+					if EX_IO(4) = '1' then -- começou a receber o sinal
+						next_state <= CALC_ALT;
+					end if;
+				when CALC_ALT =>        -- this state just for check ex_io = 0
 					LEDR(13) <= blink;
 					if EX_IO(4) = '0' then -- parou de receber o sinal
-						state <= PRINT_CALC_ALT;
+						print_measure := '1';
+						first_cycle   := '1';
+						txt           <= "--------";
+						txt2          := "--------";
+						word_pos      := 0;
+						counter := 0;
+						next_state    <= TXT_ALT;
 					end if;
 				when PRINT_CALC_ALT =>
 					LEDR(12) <= blink;
-					txt2     := "--------";
 					txt2(7)  := character'val(altura_medida/10);
 					txt2(8)  := character'val(altura_medida rem 10);
 					txt      <= txt2;
+					if counter > 12 then
+						next_state <= TRIGGER_ALT;
+						counter    := 0;
+					elsif KEY(0) = '0' then
+						next_state <= IDLE;
+						counter    := 0;
+					else
+						counter := counter + 1;
+					end if;
 			end case;
-			word_pos := word_pos + 1;
 		end if;                         -- end rising_edge
 	end process;
 end interface;

@@ -7,23 +7,25 @@ use ieee.numeric_std.all;
 ENTITY readEcho IS
 	generic(altura_sensor : integer := 15);
 	PORT(
-		CLOCK_50 : IN  std_logic;
-		ECHO     : IN  STD_logic;
+		CLOCK_50      : IN  std_logic;
+		ECHO          : IN  STD_logic;
 		altura_medida : OUT integer
 	);
 
 END readEcho;
 
 ARCHITECTURE interface OF readEcho IS
-	CONSTANT height : integer := 20; -- cm
+	CONSTANT height  : integer := 20;   -- cm
 	SIGNAL estado    : integer range 0 to 2;
-	SIGNAL tcontador : integer; --range 0 to 1000000000;
+	SIGNAL microsecond : integer range 0 to 63;
+	SIGNAL counter_microsecs : integer := 0;
+	SIGNAL measure   : integer range 0 to 511;
 	SIGNAL echoevent : std_logic;
 
 BEGIN
-
 	PROCESS(CLOCK_50, ECHO)
 		variable dist : integer := 0;
+		variable q    : integer := 0;
 	BEGIN
 		IF rising_edge(CLOCK_50) THEN
 			CASE estado IS
@@ -33,7 +35,12 @@ BEGIN
 					END IF;
 				WHEN 1 =>
 					IF ECHO = '1' THEN
-						tcontador <= tcontador + 1;
+						if microsecond = 49 then
+							microsecond := 0;
+							counter_microsecs := counter_microsecs + 1;
+						else
+							microsecond := microsecond + 1;
+						end if;
 					END IF;
 					IF ECHO = '0' THEN
 						estado <= 2;
@@ -42,9 +49,18 @@ BEGIN
 					-- distance: s = t*0.034/2, where veloc. is [cm/us]. Res.: 0.3 cm
 					-- dist := tcontador * 10**6 * 1/100**6 * 0.017; -- *10E6 for converting to us.
 					--dist := tcontador*0.0017;
-					altura_medida := altura_sensor - tcontador/588;
-					
-					estado <= 0;
+
+					-- altura_medida <= altura_sensor - tcontador/588;
+
+					-- divide tcontador by 588
+					while counter_microsecs >= 588 loop
+						counter_microsecs <= counter_microsecs - 588;
+						q         := q + 1;
+					end loop;
+					altura_medida <= altura_sensor - counter_microsecs;
+					counter_microsecs := 0;
+					estado        <= 0;
+					q             := 0;
 			END CASE;
 		END IF;
 		echoevent <= ECHO;
