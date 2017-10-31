@@ -1,6 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_textio.all;
+use ieee.numeric_std.all;
 
 entity pi_II is
 	generic(word_len : integer := 8);   -- nº de letras da palavra
@@ -59,6 +60,8 @@ architecture interface of pi_II is
 	signal TRIG            : std_logic := '0';
 	signal ECHO            : std_logic; -- signal response from sensor
 	signal altura_medida   : integer;
+	signal altura_medida_2 : std_logic_vector(8 downto 0);
+	--signal altura_medida_2 : integer range 0 to 511;
 	type state is (IDLE, TXT_ALT, TXT_COR, TRIGGER_ALT, CALC_ALT, PRINT_CALC_ALT);
 	signal next_state      : state     := IDLE;
 
@@ -107,6 +110,8 @@ begin
 		variable first_cycle, blink : std_logic;
 		variable counter            : integer := 0;
 		variable print_measure      : std_logic := '0';
+		variable i : integer := 0;
+		variable altura_medida_2 : unsigned integer := 0;
 	begin
 		if rising_edge(clk_out) then
 			-- pisca pisca p/ debug do clock
@@ -120,6 +125,7 @@ begin
 						txt2        := "--------";
 						first_cycle := '1';
 						word_pos    := 0;
+						LEDR(17)    <= '0';
 						next_state  <= TXT_ALT;
 					elsif KEY(1) = '0' then
 						txt         <= "--------";
@@ -127,6 +133,12 @@ begin
 						first_cycle := '1';
 						word_pos    := 0;
 						next_state  <= TXT_COR;
+						LEDR(17)    <= '0';
+					elsif KEY(3) = '0' then
+						txt        <= "--------";
+						txt2       := "--------";
+						next_state <= TRIGGER_ALT;
+						LEDR(17)   <= '0';
 					end if;
 				when TXT_COR =>
 					LEDR(16) <= blink;
@@ -134,10 +146,12 @@ begin
 						txt        <= "--------";
 						txt2       := "--------";
 						next_state <= IDLE;
+						LEDR(16)   <= '0';
 					elsif KEY(3) = '0' then
 						txt        <= "--------";
 						txt2       := "--------";
 						next_state <= TRIGGER_ALT;
+						LEDR(16)   <= '0';
 					end if;
 					if first_cycle = '1' then
 						case word_pos is
@@ -164,10 +178,12 @@ begin
 						txt        <= "--------";
 						txt2       := "--------";
 						next_state <= IDLE;
+						LEDR(15)   <= '0';
 					elsif KEY(3) = '0' then
 						txt        <= "--------";
 						txt2       := "--------";
 						next_state <= TRIGGER_ALT;
+						LEDR(15)   <= '0';
 					end if;
 					if first_cycle = '1' then
 						case word_pos is
@@ -196,6 +212,7 @@ begin
 							txt        <= "--------";
 							counter    := 0;
 							next_state <= PRINT_CALC_ALT;
+							LEDR(15)   <= '0';
 						else
 							counter := counter + 1;
 						end if;
@@ -204,16 +221,16 @@ begin
 					word_pos := word_pos + 1;
 				when TRIGGER_ALT =>
 					LEDR(14) <= blink;
-					if KEY(2) = '0' AND start_debouncer = '1' then
+					if KEY(2) = '0' then
 						next_state <= IDLE;
+						LEDR(14)   <= '0';
 					end if;
 					if start_debouncer = '0' then
-						start_debouncer <= '1'; -- stop debouncer
+						start_debouncer <= '1';
 					else
 						start_debouncer <= '0';
-					end if;
-					if EX_IO(4) = '1' then -- começou a receber o sinal
-						next_state <= CALC_ALT;
+						next_state      <= CALC_ALT;
+						LEDR(14)        <= '0';
 					end if;
 				when CALC_ALT =>        -- this state just for check ex_io = 0
 					LEDR(13) <= blink;
@@ -223,20 +240,40 @@ begin
 						txt           <= "--------";
 						txt2          := "--------";
 						word_pos      := 0;
-						counter := 0;
+						counter       := 0;
 						next_state    <= TXT_ALT;
+						LEDR(13)      <= '0';
 					end if;
 				when PRINT_CALC_ALT =>
 					LEDR(12) <= blink;
-					txt2(7)  := character'val(altura_medida/10);
-					txt2(8)  := character'val(altura_medida rem 10);
-					txt      <= txt2;
+					--altura_medida_2 <= altura_medida;
+					--txt2  := character'val(altura_medida_2);
+					--txt2(7)  := character'val(altura_medida/10);
+					--txt2(8)  := character'val(altura_medida rem 10);
+					--altura_medida_2 <= to_unsigned(altura_medida, 9);
+
+					--txt2    := integer'image(altura_medida);
+					--txt2(8) := altura_medida_2(1);
+					--txt     <= txt2;
+					
+					altura_medida_2 := altura_medida;
+					altura_medida_2 := 452;
+					i := 8;
+					while i > 4 AND altura_medida_2 > 0 loop
+						txt2(i) := altura_medida_2 mod 10;
+						altura_medida_2 := altura_medida_2/10;
+						i := i - 1;
+					end loop;
+					txt <= txt2;
+					
 					if counter > 12 then
 						next_state <= TRIGGER_ALT;
 						counter    := 0;
+						LEDR(12)   <= '0';
 					elsif KEY(0) = '0' then
 						next_state <= IDLE;
 						counter    := 0;
+						LEDR(12)   <= '0';
 					else
 						counter := counter + 1;
 					end if;
