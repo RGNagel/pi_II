@@ -9,7 +9,10 @@ ENTITY readEcho IS
 	PORT(
 		CLOCK_50      : IN  std_logic;
 		ECHO          : IN  STD_logic;
+		--altura_medida : OUT integer
+		--altura_medida : OUT unsigned(8 downto 0)
 		altura_medida : OUT integer
+
 	);
 
 END readEcho;
@@ -18,9 +21,9 @@ ARCHITECTURE interface OF readEcho IS
 	CONSTANT height  : integer := 20;   -- cm
 	SIGNAL estado    : integer range 0 to 2;
 	SIGNAL tcontador : integer := 0;
+	--SIGNAL tcontador : unsigned(31 downto 0);
 	SIGNAL measure   : integer range 0 to 511;
 	SIGNAL echoevent : std_logic;
-
 BEGIN
 	PROCESS(CLOCK_50, ECHO)
 	BEGIN
@@ -42,7 +45,8 @@ BEGIN
 					-- dist := tcontador * 10**6 * 1/100**6 * 0.017; -- *10E6 for converting to us.
 					--dist := tcontador*0.0017;
 					altura_medida <= altura_sensor - tcontador/588;
-					tcontador     <= 0;
+					--tcontador     <= 0;
+					--tcontador <= (others => '0');
 					estado        <= 0;
 			END CASE;
 		END IF;

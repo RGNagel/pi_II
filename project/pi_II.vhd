@@ -60,7 +60,7 @@ architecture interface of pi_II is
 	signal TRIG            : std_logic := '0';
 	signal ECHO            : std_logic; -- signal response from sensor
 	signal altura_medida   : integer;
-	signal altura_medida_2 : std_logic_vector(8 downto 0);
+	--signal altura_medida_2 : std_logic_vector(8 downto 0);
 	--signal altura_medida_2 : integer range 0 to 511;
 	type state is (IDLE, TXT_ALT, TXT_COR, TRIGGER_ALT, CALC_ALT, PRINT_CALC_ALT);
 	signal next_state      : state     := IDLE;
@@ -112,8 +112,8 @@ begin
 		variable counter            : integer := 0;
 		variable print_measure      : std_logic := '0';
 		variable i : integer := 0;
-		--variable altura_medida_2 : integer := 0;
-		variable altura_medida_2 : std_logic_vector(8 downto 0);
+		variable altura_medida_2 : integer range 0 to 511 := 0;
+		--variable altura_medida_2 : std_logic_vector(8 downto 0);
 	begin
 		if rising_edge(clk_out) then
 			-- pisca pisca p/ debug do clock
@@ -258,15 +258,11 @@ begin
 					--txt2(8) := altura_medida_2(1);
 					--txt     <= txt2;
 					
-					
-					
+									
 					altura_medida_2 := altura_medida;
-					--altura_medida_2 := to_unsigned(452, altura_medida'length);
-					txt2(5) := altura_medida_2/100;
-					altura_medida_2 := altura_medida_2 - altura_medida/100;
-					txt2(6) := altura_medida_2/10;
-					altura_medida_2 := altura_medida_2 - altura_medida/10;
-					txt2(7) := altura_medida_2;
+					
+					--altura_medida_2 := to_unsigned(452, altura_medida_2'length);
+	
 					
 					--i := 8;
 					--while i > 4 AND altura_medida_2 > 0 loop
