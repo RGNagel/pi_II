@@ -8,5 +8,5 @@
 !project/*.vhdl
 
 !*.pdf
-
+!state_machine
 !DE2_115_pin_assignments.csv

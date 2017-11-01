@@ -32,7 +32,7 @@ BEGIN
 					END IF;
 				WHEN 1 =>
 					IF ECHO = '1' THEN
-							tcontador <= tcontador + 1;
+						tcontador <= tcontador + 1;
 					END IF;
 					IF ECHO = '0' THEN
 						estado <= 2;
@@ -42,7 +42,7 @@ BEGIN
 					-- dist := tcontador * 10**6 * 1/100**6 * 0.017; -- *10E6 for converting to us.
 					--dist := tcontador*0.0017;
 					altura_medida <= altura_sensor - tcontador/588;
-					tcontador <= 0;
+					tcontador     <= 0;
 					estado        <= 0;
 			END CASE;
 		END IF;

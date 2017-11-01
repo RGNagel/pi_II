@@ -1,6 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_textio.all;
+--use ieee.std_logic_textio.all;
 use ieee.numeric_std.all;
 
 entity pi_II is
@@ -95,6 +95,7 @@ begin
 		port map(
 			clk_in => CLOCK_50,
 			start  => start_trigger,
+			
 			pulse  => EX_IO(3)
 		);
 	rTrigger : readEcho
@@ -111,7 +112,8 @@ begin
 		variable counter            : integer := 0;
 		variable print_measure      : std_logic := '0';
 		variable i : integer := 0;
-		variable altura_medida_2 : unsigned integer := 0;
+		--variable altura_medida_2 : integer := 0;
+		variable altura_medida_2 : std_logic_vector(8 downto 0);
 	begin
 		if rising_edge(clk_out) then
 			-- pisca pisca p/ debug do clock
@@ -256,14 +258,22 @@ begin
 					--txt2(8) := altura_medida_2(1);
 					--txt     <= txt2;
 					
+					
+					
 					altura_medida_2 := altura_medida;
-					altura_medida_2 := 452;
-					i := 8;
-					while i > 4 AND altura_medida_2 > 0 loop
-						txt2(i) := altura_medida_2 mod 10;
-						altura_medida_2 := altura_medida_2/10;
-						i := i - 1;
-					end loop;
+					--altura_medida_2 := to_unsigned(452, altura_medida'length);
+					txt2(5) := altura_medida_2/100;
+					altura_medida_2 := altura_medida_2 - altura_medida/100;
+					txt2(6) := altura_medida_2/10;
+					altura_medida_2 := altura_medida_2 - altura_medida/10;
+					txt2(7) := altura_medida_2;
+					
+					--i := 8;
+					--while i > 4 AND altura_medida_2 > 0 loop
+					--	txt2(i) := to_integer(altura_medida_2 mod 10);
+					--	altura_medida_2 := altura_medida_2/10;
+					--	i := i - 1;
+					--end loop;
 					txt <= txt2;
 					
 					if counter > 12 then
