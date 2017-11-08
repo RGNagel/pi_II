@@ -11,7 +11,9 @@ entity pi_II is
 		-- EX_IO reference: DE2_115_User_manual.pdf (page 52/122)
 		EX_IO                                          : inout std_logic_vector(6 downto 0);
 		LEDR                                           : out   std_logic_vector(17 downto 0);
-		HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7 : out   std_logic_vector(6 downto 0)
+		HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7 : out   std_logic_vector(6 downto 0);
+		GPIO                                           : inout std_logic_vector(35 downto 0);
+		SW                                             : in    std_logic_vector(17 downto 0)
 	);
 end pi_II;
 architecture interface of pi_II is
@@ -50,21 +52,51 @@ architecture interface of pi_II is
 		     buttonOut : out std_logic
 		    );
 	end component;
-	constant txt_len       : integer   := 8;
-	constant altura_sensor : integer   := 15; -- altura do sensor em cm
-	signal start_trigger   : std_logic := '1';
-	signal start_debouncer : std_logic := '1';
-	signal reset           : std_logic := '0';
-	signal clk_out         : std_logic;
-	signal txt             : string(1 to txt_len);
-	signal TRIG            : std_logic := '0';
-	signal ECHO            : std_logic; -- signal response from sensor
-	signal altura_medida   : integer;
+
+	--	component tcs230
+	--		generic(
+	--			SHIFT_BITS : integer := 8   -- 2**SHIFT_BITS is the number of samples before color detection: validated with 8
+	--		);
+	--		port(
+	--			clk_50Mhz : in  std_logic;  -- 50MHz input clock
+	--			rst       : in  std_logic;  -- input clock
+	--			data_in   : in  std_logic;  -- sensor data input
+	--			freq_sel  : in  std_logic_vector(1 downto 0);
+	--			-- freq_sel
+	--			-- "00" Power down
+	--			-- "10" 002% 	010~012 kHz
+	--			-- "01" 020%	100~120 kHz
+	--			-- "11" 100%	500~600 kHz   <--- Validated 		
+	--			s_out     : out std_logic_vector(3 downto 0); -- Filter selection
+	--			red       : out std_logic;  -- '1' if red is detected
+	--			blue      : out std_logic;  -- '1' if blue is detected
+	--			green     : out std_logic   -- '1' if green is detected	
+	--		);
+	--	end component;
+
+	constant txt_len        : integer              := 8;
+	constant altura_sensor  : integer              := 15; -- altura do sensor em cm
+	constant SHIFT_BITs     : integer              := 8;
+	signal start_trigger    : std_logic            := '1';
+	signal start_debouncer  : std_logic            := '1';
+	signal reset            : std_logic            := '0';
+	signal clk_out          : std_logic;
+	signal txt              : string(1 to txt_len);
+	signal TRIG             : std_logic            := '0';
+	signal ECHO             : std_logic; -- signal response from sensor
+	signal altura_medida    : integer;
 	--signal altura_medida_2 : std_logic_vector(8 downto 0);
 	--signal altura_medida_2 : integer range 0 to 511;
-	type state is (IDLE, TXT_ALT, TXT_COR, TRIGGER_ALT, CALC_ALT, PRINT_CALC_ALT);
-	signal next_state      : state     := IDLE;
-
+	type state is (IDLE, TXT_ALT, TXT_COR, TRIGGER_ALT, CALC_ALT, PRINT_CALC_ALT, MOTOR_PASSOS, COLOR_SENSOR);
+	signal next_state       : state                := IDLE;
+	-- motor variable
+	signal step             : integer range 0 to 7 := 0;
+	signal reset_motor      : std_logic            := '0';
+	-- color sensor variables
+	signal RED              : std_logic            := '0';
+	signal BLUE             : std_logic            := '0';
+	signal GREEN            : std_logic            := '0';
+	signal filter_selection : std_logic_vector(3 downto 0);
 begin
 	uut : freq_divider
 		port map(
@@ -95,7 +127,6 @@ begin
 		port map(
 			clk_in => CLOCK_50,
 			start  => start_trigger,
-			
 			pulse  => EX_IO(3)
 		);
 	rTrigger : readEcho
@@ -105,14 +136,33 @@ begin
 			ECHO          => EX_IO(4),  -- here we receive signal pulse from sensor
 			altura_medida => altura_medida
 		);
+
+	--	color : tcs230
+	--		generic map(SHIFT_BITS => SHIFT_BITS)
+	--		port map(
+	--			clk_50Mhz => CLOCK_50,
+	--			rst       => reset,
+	--			data_in   => GPIO(26),
+	--			freq_sel  => "11",
+	--			s_out     => filter_selection,
+	--			red       => RED,
+	--			blue      => BLUE,
+	--			green     => GREEN
+	--		);
+
 	process(clk_out, KEY(0), KEY(1), KEY(2), KEY(3))
 		variable txt2               : string(1 to txt_len);
 		variable word_pos           : integer := 0;
 		variable first_cycle, blink : std_logic;
 		variable counter            : integer := 0;
 		variable print_measure      : std_logic := '0';
-		variable i : integer := 0;
-		variable altura_medida_2 : integer range 0 to 511 := 0;
+		variable i                  : integer := 0;
+		variable altura_medida_2    : integer range 0 to 511 := 0;
+		variable abcd               : std_logic_vector(0 to 3);
+		variable a                  : integer range 0 to 511 := 0;
+		variable x                  : integer;
+		variable y                  : integer;
+		variable z                  : integer;
 		--variable altura_medida_2 : std_logic_vector(8 downto 0);
 	begin
 		if rising_edge(clk_out) then
@@ -141,6 +191,10 @@ begin
 						txt2       := "--------";
 						next_state <= TRIGGER_ALT;
 						LEDR(17)   <= '0';
+					elsif SW(0) = '1' then
+						txt        <= "--------";
+						txt2       := "--------";
+						next_state <= COLOR_SENSOR;
 					end if;
 				when TXT_COR =>
 					LEDR(16) <= blink;
@@ -257,21 +311,63 @@ begin
 					--txt2    := integer'image(altura_medida);
 					--txt2(8) := altura_medida_2(1);
 					--txt     <= txt2;
-					
-									
-					altura_medida_2 := altura_medida;
-					
-					--altura_medida_2 := to_unsigned(452, altura_medida_2'length);
-	
-					
-					--i := 8;
-					--while i > 4 AND altura_medida_2 > 0 loop
-					--	txt2(i) := to_integer(altura_medida_2 mod 10);
-					--	altura_medida_2 := altura_medida_2/10;
-					--	i := i - 1;
-					--end loop;
+
+					--altura_medida_2 := altura_medida;
+					if altura_medida > 400 then
+						a := 400;
+					else
+						a := altura_medida;
+					end if;
+
+					x := a/100;
+					y := a/10 - x*10;
+					z := a - x*100 - y*10;
+
+					txt2(3) := 'C';
+					txt2(4) := 'T';
+
+					case z is
+						when 0      => txt2(8) := '0';
+						when 1      => txt2(8) := '1';
+						when 2      => txt2(8) := '2';
+						when 3      => txt2(8) := '3';
+						when 4      => txt2(8) := '4';
+						when 5      => txt2(8) := '5';
+						when 6      => txt2(8) := '6';
+						when 7      => txt2(8) := '7';
+						when 8      => txt2(8) := '8';
+						when 9      => txt2(8) := '9';
+						when others => txt2(8) := '-';
+					end case;
+					case y is
+						when 0      => txt2(7) := '0';
+						when 1      => txt2(7) := '1';
+						when 2      => txt2(7) := '2';
+						when 3      => txt2(7) := '3';
+						when 4      => txt2(7) := '4';
+						when 5      => txt2(7) := '5';
+						when 6      => txt2(7) := '6';
+						when 7      => txt2(7) := '7';
+						when 8      => txt2(7) := '8';
+						when 9      => txt2(7) := '9';
+						when others => txt2(7) := '-';
+					end case;
+					case x is
+						when 0      => txt2(6) := '0';
+						when 1      => txt2(6) := '1';
+						when 2      => txt2(6) := '2';
+						when 3      => txt2(6) := '3';
+						when 4      => txt2(6) := '4';
+						when 5      => txt2(6) := '5';
+						when 6      => txt2(6) := '6';
+						when 7      => txt2(6) := '7';
+						when 8      => txt2(6) := '8';
+						when 9      => txt2(6) := '9';
+						when others => txt2(6) := '-';
+					end case;
+
 					txt <= txt2;
-					
+
 					if counter > 12 then
 						next_state <= TRIGGER_ALT;
 						counter    := 0;
@@ -282,6 +378,43 @@ begin
 						LEDR(12)   <= '0';
 					else
 						counter := counter + 1;
+					end if;
+				when MOTOR_PASSOS =>
+					LEDR(11) <= blink;
+					case step is
+						when 0      => abcd := "1000";
+						when 1      => abcd := "1100";
+						when 2      => abcd := "0100";
+						when 3      => abcd := "0110";
+						when 4      => abcd := "0010";
+						when 5      => abcd := "0011";
+						when 6      => abcd := "0001";
+						when 7      => abcd := "1001";
+						when others => abcd := "1000";
+					end case;
+					if step = 7 then
+						if reset_motor = '1' then
+							reset_motor <= '0';
+						end if;
+						step <= 0;
+					else
+						step <= step + 1;
+					end if;
+					GPIO(0)  <= abcd(0);
+					GPIO(1)  <= abcd(1);
+					GPIO(2)  <= abcd(2);
+					GPIO(3)  <= abcd(3);
+					if reset_motor = '1' then
+
+					end if;
+				when COLOR_SENSOR =>
+					LEDR(10) <= blink;
+					LEDR(2)  <= RED;
+					LEDR(1)  <= GREEN;
+					LEDR(0)  <= BLUE;
+					if KEY(2) = '0' then
+						next_state <= IDLE;
+						LEDR(10)   <= '0';
 					end if;
 			end case;
 		end if;                         -- end rising_edge

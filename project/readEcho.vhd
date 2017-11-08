@@ -8,49 +8,40 @@ ENTITY readEcho IS
 	generic(altura_sensor : integer := 15);
 	PORT(
 		CLOCK_50      : IN  std_logic;
-		ECHO          : IN  STD_logic;
-		--altura_medida : OUT integer
-		--altura_medida : OUT unsigned(8 downto 0)
+		ECHO          : IN  std_logic;
 		altura_medida : OUT integer
-
 	);
 
 END readEcho;
-
 ARCHITECTURE interface OF readEcho IS
-	CONSTANT height  : integer := 20;   -- cm
-	SIGNAL estado    : integer range 0 to 2;
-	SIGNAL tcontador : integer := 0;
+	CONSTANT height   : integer := 20;  -- cm
+	SIGNAL estado     : integer range 0 to 2;
+	SIGNAL tcontador  : integer := 0;
 	--SIGNAL tcontador : unsigned(31 downto 0);
-	SIGNAL measure   : integer range 0 to 511;
-	SIGNAL echoevent : std_logic;
+	SIGNAL measure    : integer range 0 to 511;
+	SIGNAL echoevent  : std_logic;
+	type state is (IDLE, READ, DONE);
+	signal next_state : state   := IDLE;
 BEGIN
 	PROCESS(CLOCK_50, ECHO)
 	BEGIN
 		IF rising_edge(CLOCK_50) THEN
-			CASE estado IS
-				WHEN 0 =>
-					IF (echoevent = '1' and ECHO = '1') THEN
-						estado <= 1;
+			CASE next_state IS
+				WHEN IDLE =>
+					IF ECHO = '1' THEN
+						next_state <= READ;
 					END IF;
-				WHEN 1 =>
+				WHEN READ =>
 					IF ECHO = '1' THEN
 						tcontador <= tcontador + 1;
+					ELSE
+						next_state <= DONE;
 					END IF;
-					IF ECHO = '0' THEN
-						estado <= 2;
-					END IF;
-				WHEN 2 =>
-					-- distance: s = t*0.034/2, where veloc. is [cm/us]. Res.: 0.3 cm
-					-- dist := tcontador * 10**6 * 1/100**6 * 0.017; -- *10E6 for converting to us.
-					--dist := tcontador*0.0017;
-					altura_medida <= altura_sensor - tcontador/588;
-					--tcontador     <= 0;
-					--tcontador <= (others => '0');
-					estado        <= 0;
+				WHEN DONE =>
+					altura_medida <= tcontador/3000;
+					tcontador     <= 0;
+					next_state    <= IDLE;
 			END CASE;
 		END IF;
-		echoevent <= ECHO;
 	END PROCESS;
-
 END;
