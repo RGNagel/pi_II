@@ -53,26 +53,27 @@ architecture interface of pi_II is
 		    );
 	end component;
 
-	--	component tcs230
-	--		generic(
-	--			SHIFT_BITS : integer := 8   -- 2**SHIFT_BITS is the number of samples before color detection: validated with 8
-	--		);
-	--		port(
-	--			clk_50Mhz : in  std_logic;  -- 50MHz input clock
-	--			rst       : in  std_logic;  -- input clock
-	--			data_in   : in  std_logic;  -- sensor data input
-	--			freq_sel  : in  std_logic_vector(1 downto 0);
-	--			-- freq_sel
-	--			-- "00" Power down
-	--			-- "10" 002% 	010~012 kHz
-	--			-- "01" 020%	100~120 kHz
-	--			-- "11" 100%	500~600 kHz   <--- Validated 		
-	--			s_out     : out std_logic_vector(3 downto 0); -- Filter selection
-	--			red       : out std_logic;  -- '1' if red is detected
-	--			blue      : out std_logic;  -- '1' if blue is detected
-	--			green     : out std_logic   -- '1' if green is detected	
-	--		);
-	--	end component;
+	-- 		RENAN MODULE
+		component tcs230
+			generic(
+				SHIFT_BITS : integer := 8   -- 2**SHIFT_BITS is the number of samples before color detection: validated with 8
+			);
+			port(
+				clk_50Mhz : in  std_logic;  -- 50MHz input clock
+				rst       : in  std_logic;  -- input clock
+				data_in   : in  std_logic;  -- sensor data input
+				freq_sel  : in  std_logic_vector(1 downto 0);
+				-- freq_sel
+				-- "00" Power down
+				-- "10" 002% 	010~012 kHz
+				-- "01" 020%	100~120 kHz
+				-- "11" 100%	500~600 kHz   <--- Validated 		
+				s_out     : out std_logic_vector(3 downto 0); -- Filter selection
+				red       : out std_logic;  -- '1' if red is detected
+				blue      : out std_logic;  -- '1' if blue is detected
+				green     : out std_logic   -- '1' if green is detected	
+			);
+		end component;
 
 	constant txt_len        : integer              := 8;
 	constant altura_sensor  : integer              := 15; -- altura do sensor em cm
@@ -137,18 +138,19 @@ begin
 			altura_medida => altura_medida
 		);
 
-	--	color : tcs230
-	--		generic map(SHIFT_BITS => SHIFT_BITS)
-	--		port map(
-	--			clk_50Mhz => CLOCK_50,
-	--			rst       => reset,
-	--			data_in   => GPIO(26),
-	--			freq_sel  => "11",
-	--			s_out     => filter_selection,
-	--			red       => RED,
-	--			blue      => BLUE,
-	--			green     => GREEN
-	--		);
+	-- RENAN MODULE
+		color : tcs230
+			generic map(SHIFT_BITS => SHIFT_BITS)
+			port map(
+				clk_50Mhz => CLOCK_50,
+				rst       => reset,
+				data_in   => GPIO(26),
+				freq_sel  => "11",
+				s_out     => filter_selection,
+				red       => RED,
+				blue      => BLUE,
+				green     => GREEN
+			);
 
 	process(clk_out, KEY(0), KEY(1), KEY(2), KEY(3))
 		variable txt2               : string(1 to txt_len);
