@@ -54,26 +54,26 @@ architecture interface of pi_II is
 	end component;
 
 	-- 		RENAN MODULE
-		component tcs230
-			generic(
-				SHIFT_BITS : integer := 8   -- 2**SHIFT_BITS is the number of samples before color detection: validated with 8
-			);
-			port(
-				clk_50Mhz : in  std_logic;  -- 50MHz input clock
-				rst       : in  std_logic;  -- input clock
-				data_in   : in  std_logic;  -- sensor data input
-				freq_sel  : in  std_logic_vector(1 downto 0);
-				-- freq_sel
-				-- "00" Power down
-				-- "10" 002% 	010~012 kHz
-				-- "01" 020%	100~120 kHz
-				-- "11" 100%	500~600 kHz   <--- Validated 		
-				s_out     : out std_logic_vector(3 downto 0); -- Filter selection
-				red       : out std_logic;  -- '1' if red is detected
-				blue      : out std_logic;  -- '1' if blue is detected
-				green     : out std_logic   -- '1' if green is detected	
-			);
-		end component;
+	component tcs230
+		generic(
+			SHIFT_BITS : integer := 8   -- 2**SHIFT_BITS is the number of samples before color detection: validated with 8
+		);
+		port(
+			clk_50Mhz : in  std_logic;  -- 50MHz input clock
+			rst       : in  std_logic;  -- input clock
+			data_in   : in  std_logic;  -- sensor data input
+			freq_sel  : in  std_logic_vector(1 downto 0);
+			-- freq_sel
+			-- "00" Power down
+			-- "10" 002% 	010~012 kHz
+			-- "01" 020%	100~120 kHz
+			-- "11" 100%	500~600 kHz   <--- Validated 		
+			s_out     : out std_logic_vector(3 downto 0); -- Filter selection
+			red       : out std_logic;  -- '1' if red is detected
+			blue      : out std_logic;  -- '1' if blue is detected
+			green     : out std_logic   -- '1' if green is detected	
+		);
+	end component;
 
 	constant txt_len        : integer              := 8;
 	constant altura_sensor  : integer              := 15; -- altura do sensor em cm
@@ -123,7 +123,7 @@ begin
 			clockIn   => CLOCK_50,
 			buttonIn  => start_debouncer,
 			buttonOut => start_trigger  -- DOWN
-		);
+		);	
 	st : sendTrigger
 		port map(
 			clk_in => CLOCK_50,
@@ -139,19 +139,24 @@ begin
 		);
 
 	-- RENAN MODULE
-		color : tcs230
-			generic map(SHIFT_BITS => SHIFT_BITS)
-			port map(
-				clk_50Mhz => CLOCK_50,
-				rst       => reset,
-				data_in   => GPIO(26),
-				freq_sel  => "11",
-				s_out     => filter_selection,
-				red       => RED,
-				blue      => BLUE,
-				green     => GREEN
-			);
-
+	color : tcs230
+		generic map(SHIFT_BITS => SHIFT_BITS)
+		port map(
+			clk_50Mhz => CLOCK_50,
+			rst       => '0',
+			data_in   => GPIO(26),
+			freq_sel  => "11",
+			s_out     => GPIO(35 DOWNTO 32), -- s3,s2,s1,s0 (gpio)
+			red       => LEDR(2),
+			green     => LEDR(1),
+			blue      => LEDR(0)
+		);
+	--	samples_tcs230 : samples_tcs230
+	--		port map (
+	--			red => RED,
+	--			blue => BLUE,
+	--			green => 
+	--		);
 	process(clk_out, KEY(0), KEY(1), KEY(2), KEY(3))
 		variable txt2               : string(1 to txt_len);
 		variable word_pos           : integer := 0;
@@ -161,15 +166,18 @@ begin
 		variable i                  : integer := 0;
 		variable altura_medida_2    : integer range 0 to 511 := 0;
 		variable abcd               : std_logic_vector(0 to 3);
+		-- medida da altura:
 		variable a                  : integer range 0 to 511 := 0;
 		variable x                  : integer;
 		variable y                  : integer;
 		variable z                  : integer;
+
 		--variable altura_medida_2 : std_logic_vector(8 downto 0);
 	begin
-		if rising_edge(clk_out) then
+		--if rising_edge(clk_out) then
+		if rising_edge(CLOCK_50) then
 			-- pisca pisca p/ debug do clock
-			blink := not (blink);
+			blink    := not (blink);
 			case next_state is
 				when IDLE =>
 					LEDR(17) <= blink;
@@ -410,13 +418,25 @@ begin
 
 					end if;
 				when COLOR_SENSOR =>
+					-- data in: GPIO(26)
+					--GPIO(28) <= '1'; -- enables it at LOW
+
+					-- s0, s1, s2, s3
+					--GPIO(32) <= filter_selection(3); 
+					--GPIO(33) <= filter_selection(2); 
+					--GPIO(34) <= filter_selection(1); 
+					--GPIO(35) <= filter_selection(0); 
 					LEDR(10) <= blink;
-					LEDR(2)  <= RED;
-					LEDR(1)  <= GREEN;
-					LEDR(0)  <= BLUE;
+					--LEDR(2)  <= RED;
+					--LEDR(1)  <= GREEN;
+					--LEDR(0)  <= BLUE;
 					if KEY(2) = '0' then
+						GPIO(28)   <= '0'; -- disables it at LOW
 						next_state <= IDLE;
 						LEDR(10)   <= '0';
+						--LEDR(2)    <= '0';
+						--LEDR(1)    <= '0';
+						--LEDR(0)    <= '0';
 					end if;
 			end case;
 		end if;                         -- end rising_edge
