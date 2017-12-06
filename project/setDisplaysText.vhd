@@ -56,6 +56,14 @@ begin
 				WHEN '8'    => display_code := "0000000"; -- nr 8
 				WHEN '9'    => display_code := "0011000"; -- nr 9
 				WHEN ','    => display_code := "1111011";
+				WHEN 'Z'    => display_code := "0100100";
+				WHEN 'V'    => display_code := "1100011";
+				WHEN 'E'    => display_code := "0000110";
+				WHEN 'M'    => display_code := "0101010";
+				WHEN 'H'    => display_code := "0001001";
+				WHEN 'B'    => display_code := "0000011";
+				WHEN 'G'    => display_code := "0010000";
+				WHEN 'N'    => display_code := "0101011";
 				WHEN OTHERS => display_code := "1111111";
 			END CASE;
 
