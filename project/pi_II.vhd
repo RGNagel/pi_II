@@ -79,6 +79,7 @@ architecture interface of pi_II is
 	constant altura_sensor : integer   := 15; -- altura do sensor em cm
 	constant SHIFT_BITs    : integer   := 8;
 	constant TEN_SECONDS   : integer   := 500000000;
+	signal start_trigger_2 : std_logic := '1';
 	signal start_trigger   : std_logic := '1';
 	signal start_debouncer : std_logic := '1';
 	signal reset           : std_logic := '0';
@@ -123,7 +124,7 @@ begin
 		port map(
 			clockIn   => CLOCK_50,
 			buttonIn  => start_debouncer,
-			buttonOut => start_trigger  -- DOWN
+			buttonOut => start_trigger_2 -- DOWN
 		);
 	st : sendTrigger
 		port map(
@@ -175,9 +176,9 @@ begin
 		variable blue_counter  : integer := 0;
 		variable green_counter : integer := 0;
 
-		variable motor_clockwise : std_logic := '0';
+		variable motor_clockwise : std_logic            := '0';
 		variable step            : integer range 0 to 7 := 0;
-		variable reset_motor     : std_logic := '0';
+		variable reset_motor     : std_logic            := '0';
 
 	begin
 		--if rising_edge(clk_out) then
@@ -192,14 +193,20 @@ begin
 					-- MOTOR DC ON
 					GPIO(27) <= '0';
 
+					-- start_debouncer: start sending when it's LOW.
 					-- START/STOP CALIBRATION
-					if start_debouncer = '0' then
+					if start_trigger = '1' then -- if not sending
 						if GPIO(5) = '0' then -- parou de receber sinal
-							start_debouncer <= '1'; -- trigger de novo
+							start_trigger <= '0'; -- trigger de novo
 						end if;
 					else
-						start_debouncer <= '0';
+						if GPIO(5) = '1' then
+							start_trigger <= '1'; -- stop sending
+						else
+							start_trigger <= '0';
+						end if;
 					end if;
+
 					-- RESPONSE FROM DISTANCE SENSOR
 					if altura_medida > 400 then
 						distance_before <= 400;
@@ -211,6 +218,7 @@ begin
 					if GPIO(1) = '0' then -- sensor de presença
 						txt        <= "--------";
 						txt2       := "--------";
+						LEDR(17)   <= '0';
 						next_state <= MEASURING;
 					end if;
 
@@ -232,9 +240,9 @@ begin
 							next_state <= COLOR_SENSOR;
 						end if;
 					elsif counter < TEN_SECONDS then -- 5 to 10 s
-						if counter < (TEN_SECONDS/4 + TEN_SECONDS/2) then 
+						if counter < (TEN_SECONDS/4 + TEN_SECONDS/2) then
 							txt2 := "ALTURA--";
-							
+
 							-- START TRIGGER (distance)
 							if start_debouncer = '0' then
 								if GPIO(5) = '0' then -- parou de receber sinal
@@ -243,15 +251,19 @@ begin
 							else
 								start_debouncer <= '0';
 							end if;
-							
+
 						else
 							next_state <= PRINT_CALC_ALT;
 							txt2       := "--------";
 						end if;
 					else
 						--counter  := 0;
-						LEDR(16)   <= '0';
-						txt2       := "--------";
+						LEDR(16) <= '0';
+						txt2     := "--------";
+
+						-- MOTOR DC ON
+						GPIO(27) <= '0';
+
 						next_state <= MOTOR_DE_PASSOS;
 						if motor_clockwise = '1' then
 							step := 0;
@@ -365,9 +377,9 @@ begin
 						LEDR(13)   <= '0';
 					end if;
 				when COLOR_SENSOR =>
-					LEDR(15) <= blink;
-
-					GPIO(7) <= '1';
+					LEDR(15)            <= blink;
+					GPIO(7)             <= '1';
+					-- 17 - s3, 15 - s2, 13 - s1, 11 - s0
 					filter_selection(3) <= GPIO(17);
 					filter_selection(2) <= GPIO(15);
 					filter_selection(1) <= GPIO(13);

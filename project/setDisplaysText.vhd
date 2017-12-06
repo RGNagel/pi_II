@@ -37,7 +37,6 @@ begin
 			CASE txt(i) IS
 				WHEN 'I'    => display_code := "1001111";
 				WHEN 'D'    => display_code := "0100001";
-				WHEN 'E'    => display_code := "0000110";
 				WHEN 'A'    => display_code := "0001000";
 				WHEN 'L'    => display_code := "1000111";
 				WHEN 'T'    => display_code := "0000111";
