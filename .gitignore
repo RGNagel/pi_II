@@ -7,8 +7,8 @@
 !README.md
 !project/*.vhd
 !project/*.vhdl
-!tcs/*.vhd
-!tcs/*.vhdl
+!tcs230/*.vhd
+!tcs230/*.vhdl
 
 !*.pdf
 !state_machine
