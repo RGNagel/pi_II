@@ -52,6 +52,14 @@ architecture interface of pi_II is
 		     buttonOut : out std_logic
 		    );
 	end component;
+	component motor_de_passos
+		port(
+			clk     : in  std_logic;    ---clock do sistema
+			reset   : in  std_logic;    ---volta a posição inicial
+			sentido : in  std_logic;    ---muda o sentido de giro
+			y       : out std_logic_vector(3 downto 0)); ---saida
+
+	end component;
 
 	-- 		RENAN MODULE
 	component tcs230
@@ -90,7 +98,7 @@ architecture interface of pi_II is
 	signal distance_before : integer;
 	signal altura_medida   : integer;
 
-	type state is (IDLE, PRINT_CALC_ALT, MOTOR_DE_PASSOS, COLOR_SENSOR, MEASURING);
+	type state is (IDLE, PRINT_CALC_ALT, MOTOR_PASSOS, COLOR_SENSOR, MEASURING);
 	signal next_state : state := IDLE;
 	-- motor variable
 
@@ -99,6 +107,10 @@ architecture interface of pi_II is
 	signal BLUE             : std_logic := '0';
 	signal GREEN            : std_logic := '0';
 	signal filter_selection : std_logic_vector(3 downto 0);
+	
+	signal reset_motor : std_logic := '0';
+	signal sentido_motor : std_logic := '0';
+	signal abcd : std_logic_vector(3 downto 0);
 
 begin
 	uut : freq_divider
@@ -140,6 +152,14 @@ begin
 			altura_medida => altura_medida
 		);
 
+	motor: motor_de_passos
+		port map (
+			clk => CLOCK_50,
+			reset => reset_motor,
+			sentido => sentido_motor,
+			y => abcd
+		);
+
 	-- RENAN MODULE
 	color : tcs230
 		generic map(SHIFT_BITS => SHIFT_BITS)
@@ -164,7 +184,6 @@ begin
 		variable print_measure   : std_logic              := '0';
 		variable i               : integer                := 0;
 		variable altura_medida_2 : integer range 0 to 511 := 0;
-		variable abcd            : std_logic_vector(0 to 3);
 
 		-- medida da altura:
 		variable a : integer range 0 to 511 := 0;
@@ -175,10 +194,6 @@ begin
 		variable red_counter   : integer := 0;
 		variable blue_counter  : integer := 0;
 		variable green_counter : integer := 0;
-
-		variable motor_clockwise : std_logic            := '0';
-		variable step            : integer range 0 to 7 := 0;
-		variable reset_motor     : std_logic            := '0';
 
 	begin
 		--if rising_edge(clk_out) then
@@ -212,6 +227,68 @@ begin
 						distance_before <= 400;
 					else
 						distance_before <= altura_medida;
+
+						-- APAGAR -----------------------------------------------------------
+
+						if altura_medida > 400 then
+							a := 400;
+						else
+							a := altura_medida;
+						end if;
+
+						a := altura_medida;
+
+						x := a/100;
+						y := a/10 - x*10;
+						z := a - x*100 - y*10;
+
+						txt2(3) := 'C';
+						txt2(4) := 'M';
+
+						case z is
+							when 0      => txt2(8) := '0';
+							when 1      => txt2(8) := '1';
+							when 2      => txt2(8) := '2';
+							when 3      => txt2(8) := '3';
+							when 4      => txt2(8) := '4';
+							when 5      => txt2(8) := '5';
+							when 6      => txt2(8) := '6';
+							when 7      => txt2(8) := '7';
+							when 8      => txt2(8) := '8';
+							when 9      => txt2(8) := '9';
+							when others => txt2(8) := '-';
+						end case;
+						case y is
+							when 0      => txt2(7) := '0';
+							when 1      => txt2(7) := '1';
+							when 2      => txt2(7) := '2';
+							when 3      => txt2(7) := '3';
+							when 4      => txt2(7) := '4';
+							when 5      => txt2(7) := '5';
+							when 6      => txt2(7) := '6';
+							when 7      => txt2(7) := '7';
+							when 8      => txt2(7) := '8';
+							when 9      => txt2(7) := '9';
+							when others => txt2(7) := '-';
+						end case;
+						case x is
+							when 0      => txt2(6) := '0';
+							when 1      => txt2(6) := '1';
+							when 2      => txt2(6) := '2';
+							when 3      => txt2(6) := '3';
+							when 4      => txt2(6) := '4';
+							when 5      => txt2(6) := '5';
+							when 6      => txt2(6) := '6';
+							when 7      => txt2(6) := '7';
+							when 8      => txt2(6) := '8';
+							when 9      => txt2(6) := '9';
+							when others => txt2(6) := '-';
+						end case;
+
+						txt <= txt2;
+
+						-- APAGAR --------------------------------------------------------------------------
+
 					end if;
 
 					-- IF PRESENCE SENSOR DETECTED SOMETHING
@@ -256,7 +333,7 @@ begin
 							next_state <= PRINT_CALC_ALT;
 							txt2       := "--------";
 						end if;
-					else
+					else -- > TEN_SECONDS
 						--counter  := 0;
 						LEDR(16) <= '0';
 						txt2     := "--------";
@@ -264,12 +341,8 @@ begin
 						-- MOTOR DC ON
 						GPIO(27) <= '0';
 
-						next_state <= MOTOR_DE_PASSOS;
-						if motor_clockwise = '1' then
-							step := 0;
-						else
-							step := 7;
-						end if;
+						next_state <= MOTOR_PASSOS;
+
 
 					end if;
 
@@ -342,27 +415,8 @@ begin
 						counter := counter + 1;
 					end if;
 
-				when MOTOR_DE_PASSOS =>
+				when MOTOR_PASSOS =>
 					LEDR(13) <= blink;
-					case step is
-						when 0      => abcd := "1000";
-						when 1      => abcd := "1100";
-						when 2      => abcd := "0100";
-						when 3      => abcd := "0110";
-						when 4      => abcd := "0010";
-						when 5      => abcd := "0011";
-						when 6      => abcd := "0001";
-						when 7      => abcd := "1001";
-						when others => abcd := "1000";
-					end case;
-
-					if step /= 4 then
-						if motor_clockwise = '1' then
-							step := step + 1;
-						else
-							step := step - 1;
-						end if;
-					end if;
 
 					GPIO(19) <= abcd(0);
 					GPIO(21) <= abcd(1);
@@ -375,7 +429,10 @@ begin
 						counter    := 0;
 						next_state <= IDLE;
 						LEDR(13)   <= '0';
+						reset_motor <= '0';
 					end if;
+					
+					
 				when COLOR_SENSOR =>
 					LEDR(15)            <= blink;
 					GPIO(7)             <= '1';
@@ -399,13 +456,13 @@ begin
 					if red_counter > 5000 OR blue_counter > 5000 OR green_counter > 5000 then
 						if red_counter > blue_counter AND red_counter > green_counter then
 							txt2            := "-----RED";
-							motor_clockwise := '1';
+							sentido_motor <= '1';
 						elsif blue_counter > red_counter AND blue_counter > green_counter then
 							txt2            := "----BLUE";
-							motor_clockwise := '1';
+							sentido_motor <= '1';
 						else
 							txt2            := "---GREEN";
-							motor_clockwise := '0';
+							sentido_motor <= '0';
 						end if;
 
 					end if;
