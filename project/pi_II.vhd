@@ -107,10 +107,10 @@ architecture interface of pi_II is
 	signal BLUE             : std_logic := '0';
 	signal GREEN            : std_logic := '0';
 	signal filter_selection : std_logic_vector(3 downto 0);
-	
-	signal reset_motor : std_logic := '0';
+
+	signal reset_motor   : std_logic := '0';
 	signal sentido_motor : std_logic := '0';
-	signal abcd : std_logic_vector(3 downto 0);
+	signal abcd          : std_logic_vector(3 downto 0);
 
 begin
 	uut : freq_divider
@@ -152,12 +152,12 @@ begin
 			altura_medida => altura_medida
 		);
 
-	motor: motor_de_passos
-		port map (
-			clk => CLOCK_50,
-			reset => reset_motor,
+	motor : motor_de_passos
+		port map(
+			clk     => CLOCK_50,
+			reset   => reset_motor,
 			sentido => sentido_motor,
-			y => abcd
+			y       => abcd
 		);
 
 	-- RENAN MODULE
@@ -320,21 +320,25 @@ begin
 						if counter < (TEN_SECONDS/4 + TEN_SECONDS/2) then
 							txt2 := "ALTURA--";
 
-							-- START TRIGGER (distance)
-							if start_debouncer = '0' then
+							-- START/STOP CALIBRATION
+							if start_trigger = '1' then -- if not sending
 								if GPIO(5) = '0' then -- parou de receber sinal
-									start_debouncer <= '1'; -- trigger de novo
+									start_trigger <= '0'; -- trigger de novo
 								end if;
 							else
-								start_debouncer <= '0';
+								if GPIO(5) = '1' then
+									start_trigger <= '1'; -- stop sending
+								else
+									start_trigger <= '0';
+								end if;
 							end if;
 
 						else
 							next_state <= PRINT_CALC_ALT;
 							txt2       := "--------";
 						end if;
-					else -- > TEN_SECONDS
-						--counter  := 0;
+					else                -- > TEN_SECONDS
+					--counter  := 0;
 						LEDR(16) <= '0';
 						txt2     := "--------";
 
@@ -342,7 +346,6 @@ begin
 						GPIO(27) <= '0';
 
 						next_state <= MOTOR_PASSOS;
-
 
 					end if;
 
@@ -426,13 +429,12 @@ begin
 					if counter < 2*TEN_SECONDS then
 						counter := counter + 1;
 					else
-						counter    := 0;
-						next_state <= IDLE;
-						LEDR(13)   <= '0';
+						counter     := 0;
+						next_state  <= IDLE;
+						LEDR(13)    <= '0';
 						reset_motor <= '0';
 					end if;
-					
-					
+
 				when COLOR_SENSOR =>
 					LEDR(15)            <= blink;
 					GPIO(7)             <= '1';
@@ -455,13 +457,13 @@ begin
 
 					if red_counter > 5000 OR blue_counter > 5000 OR green_counter > 5000 then
 						if red_counter > blue_counter AND red_counter > green_counter then
-							txt2            := "-----RED";
+							txt2          := "-----RED";
 							sentido_motor <= '1';
 						elsif blue_counter > red_counter AND blue_counter > green_counter then
-							txt2            := "----BLUE";
+							txt2          := "----BLUE";
 							sentido_motor <= '1';
 						else
-							txt2            := "---GREEN";
+							txt2          := "---GREEN";
 							sentido_motor <= '0';
 						end if;
 

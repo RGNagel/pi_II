@@ -2,8 +2,11 @@
 *
 #but not these files
 !project/
+!tcs230/
 !.gitignore
 !README.md
+!project/*.vhd
+!project/*.vhdl
 !project/*.vhd
 !project/*.vhdl
 
