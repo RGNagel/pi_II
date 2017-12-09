@@ -86,7 +86,7 @@ architecture interface of pi_II is
 
 	constant txt_len            : integer := 8;
 	constant altura_sensor      : integer := 15; -- altura do sensor em cm
-	constant SHIFT_BITs         : integer := 8;
+	constant SHIFT_BITS         : integer := 8;
 	-- PERIODS BASED ON clock 50MHz
 	constant TEN_SECONDS        : integer := 500000000;
 	constant ONE_SECOND         : integer := 50000000;
@@ -120,6 +120,8 @@ architecture interface of pi_II is
 	signal sentido_motor : std_logic := '0';
 	signal abcd          : std_logic_vector(3 downto 0);
 
+	signal sensor_red : std_logic := '1';
+
 begin
 	uut : freq_divider
 		port map(
@@ -143,8 +145,8 @@ begin
 	debouncer : debouncer_pi
 		port map(
 			clockIn   => CLOCK_50,
-			buttonIn  => start_debouncer,
-			buttonOut => start_trigger_2 -- DOWN
+			buttonIn  => GPIO(1),
+			buttonOut => sensor_red     -- DOWN
 		);
 	st : sendTrigger
 		port map(
@@ -206,15 +208,12 @@ begin
 		variable counter_trigger : integer := 0;
 
 	begin
-		--if rising_edge(clk_out) then
 		if rising_edge(CLOCK_50) then
-			-- pisca pisca p/ debug do clock
-			blink := not (blink);
+
 			case next_state is
 				when IDLE =>
-
-					LEDR(17) <= blink;
-					txt2     := "----IDLE";
+					LEDR(17) <= '1';
+					--txt2     := "----IDLE";
 
 					-- MOTOR DC ON
 					GPIO(27) <= '1';
@@ -238,12 +237,60 @@ begin
 
 					-- REMOVE ------------ \/
 
-					-- debug code just in case				
+					txt2 := "T-------";
+
+					a := distance_before;
+					x := a/100;
+					y := a/10 - x*10;
+					z := a - x*100 - y*10;
+
+					txt2(3) := 'C';
+					txt2(4) := 'M';
+
+					case z is
+						when 0      => txt2(8) := '0';
+						when 1      => txt2(8) := '1';
+						when 2      => txt2(8) := '2';
+						when 3      => txt2(8) := '3';
+						when 4      => txt2(8) := '4';
+						when 5      => txt2(8) := '5';
+						when 6      => txt2(8) := '6';
+						when 7      => txt2(8) := '7';
+						when 8      => txt2(8) := '8';
+						when 9      => txt2(8) := '9';
+						when others => txt2(8) := '-';
+					end case;
+					case y is
+						when 0      => txt2(7) := '0';
+						when 1      => txt2(7) := '1';
+						when 2      => txt2(7) := '2';
+						when 3      => txt2(7) := '3';
+						when 4      => txt2(7) := '4';
+						when 5      => txt2(7) := '5';
+						when 6      => txt2(7) := '6';
+						when 7      => txt2(7) := '7';
+						when 8      => txt2(7) := '8';
+						when 9      => txt2(7) := '9';
+						when others => txt2(7) := '-';
+					end case;
+					case x is
+						when 0      => txt2(6) := '0';
+						when 1      => txt2(6) := '1';
+						when 2      => txt2(6) := '2';
+						when 3      => txt2(6) := '3';
+						when 4      => txt2(6) := '4';
+						when 5      => txt2(6) := '5';
+						when 6      => txt2(6) := '6';
+						when 7      => txt2(6) := '7';
+						when 8      => txt2(6) := '8';
+						when 9      => txt2(6) := '9';
+						when others => txt2(6) := '-';
+					end case;
 
 					-- REMOVE ------------ /\
 
 					-- IF PRESENCE SENSOR DETECTED SOMETHING
-					if GPIO(1) = '0' then -- sensor de presença
+					if sensor_red = '0' then -- sensor de presença
 						txt2       := "--------";
 						LEDR(17)   <= '0';
 						counter    := 0;
@@ -253,7 +300,7 @@ begin
 				-- PRESENCE SENSOR
 				when MEASURING =>
 
-					LEDR(16) <= blink;
+					LEDR(16) <= '1';
 
 					-- MOTOR DC OFF
 					GPIO(27) <= '0';
@@ -261,10 +308,10 @@ begin
 					if counter < TEN_SECONDS/5 then
 						txt2 := "COR-----";
 					elsif counter < TEN_SECONDS/2 then
+						LEDR(16)   <= '0';
 						next_state <= COLOR_SENSOR;
 					elsif counter < (TEN_SECONDS/4 + TEN_SECONDS/2) then
-						txt2 := "ALTURA--";
-
+						txt2            := "ALTURA--";
 						counter_trigger := counter_trigger + 1;
 						if counter_trigger < TRIGGER_TIME then
 							GPIO(3) <= '1';
@@ -276,23 +323,77 @@ begin
 
 					elsif counter < TEN_SECONDS then
 						next_state <= PRINT_CALC_ALT;
+						LEDR(16)   <= '0';
 					elsif counter < (TEN_SECONDS + TEN_SECONDS) then
 						txt2       := "--------";
+						LEDR(16)   <= '0';
 						next_state <= MOTOR_PASSOS;
 					else
+						LEDR(16)   <= '0';
 						next_state <= IDLE;
 					end if;
 
+				when COLOR_SENSOR =>
+					LEDR(15)            <= '1';
+					-- ENABLE
+					GPIO(7)             <= '0';
+					-- 17 - s3, 15 - s2, 13 - s1, 11 - s0
+					filter_selection(3) <= GPIO(17);
+					filter_selection(2) <= GPIO(15);
+					filter_selection(1) <= GPIO(13);
+					filter_selection(0) <= GPIO(11);
+
+					if RED = '1' then
+						red_counter := red_counter + 1;
+						LEDR(2)     <= RED;
+					elsif BLUE = '1' then
+						blue_counter := blue_counter + 1;
+						LEDR(0)      <= BLUE;
+					elsif GREEN = '1' then
+						green_counter := green_counter + 1;
+						LEDR(1)       <= GREEN;
+					end if;
+
+					if red_counter > COLOR_COUNT_TIME OR blue_counter > COLOR_COUNT_TIME OR green_counter > COLOR_COUNT_TIME then
+						if red_counter > blue_counter AND red_counter > green_counter then
+							txt2          := "-----RED";
+							sentido_motor <= '1';
+						elsif blue_counter > red_counter AND blue_counter > green_counter then
+							txt2          := "----BLUE";
+							sentido_motor <= '1';
+						elsif green_counter > red_counter AND green_counter > blue_counter then
+							txt2          := "---GREEN";
+							sentido_motor <= '0';
+						end if;
+						red_counter := 0;
+						blue_counter := 0;
+						green_counter := 0;
+					end if;
+
+					if counter >= TEN_SECONDS/2 then
+						-- DO NOT RESET COUNTER HERE
+						next_state    <= MEASURING;
+						LEDR(15)      <= '0';
+						GPIO(7)       <= '0';
+						LEDR(2)       <= '0';
+						LEDR(1)       <= '0';
+						LEDR(0)       <= '0';
+						red_counter   := 0;
+						blue_counter  := 0;
+						green_counter := 0;
+						txt2          := "--------";
+					end if;
+
 				when PRINT_CALC_ALT =>
-					LEDR(14) <= blink;
+					LEDR(14) <= '1';
 					txt2     := "--------";
 					if altura_medida > 400 then
 						a := 400;
 					else
-						a := altura_medida;	
+						a := altura_medida;
 					end if;
 
-					a := distance_before - altura_medida;
+					a := distance_before - a;
 					x := a/100;
 					y := a/10 - x*10;
 					z := a - x*100 - y*10;
@@ -346,7 +447,7 @@ begin
 					end if;
 
 				when MOTOR_PASSOS =>
-					LEDR(13) <= blink;
+					LEDR(13) <= '1';
 
 					-- DO NOT RESET
 					reset_motor <= '0';
@@ -365,121 +466,32 @@ begin
 						reset_motor <= '1';
 					end if;
 
-				when COLOR_SENSOR =>
-					LEDR(15)            <= blink;
-					-- ENABLE
-					GPIO(7)             <= '1';
-					-- 17 - s3, 15 - s2, 13 - s1, 11 - s0
-					filter_selection(3) <= GPIO(17);
-					filter_selection(2) <= GPIO(15);
-					filter_selection(1) <= GPIO(13);
-					filter_selection(0) <= GPIO(11);
+			end case;                   -- END STATE MACHINE
 
-					if RED = '1' then
-						red_counter := red_counter + 1;
-						LEDR(2)     <= RED;
-					elsif BLUE = '1' then
-						blue_counter := blue_counter + 1;
-						LEDR(0)      <= BLUE;
-					elsif GREEN = '1' then
-						green_counter := green_counter + 1;
-						LEDR(1)       <= GREEN;
-					end if;
+			----------------------------------
 
-					if red_counter > COLOR_COUNT_TIME OR blue_counter > COLOR_COUNT_TIME OR green_counter > COLOR_COUNT_TIME then
-						if red_counter > blue_counter AND red_counter > green_counter then
-							txt2          := "-----RED";
-							sentido_motor <= '1';
-						elsif blue_counter > red_counter AND blue_counter > green_counter then
-							txt2          := "----BLUE";
-							sentido_motor <= '1';
-						elsif green_counter > red_counter AND green_counter > blue_counter then
-							txt2          := "---GREEN";
-							sentido_motor <= '0';
-						end if;
-						red_counter := 0;
-						blue_counter := 0;
-						green_counter := 0;
-					end if;
+			-- MANUAL OPTIONS
 
-					if counter >= TEN_SECONDS/2 then
-						-- DO NOT RESET COUNTER HERE
-						next_state    <= MEASURING;
-						LEDR(15)      <= '0';
-						GPIO(7)       <= '0';
-						LEDR(2)       <= '0';
-						LEDR(1)       <= '0';
-						LEDR(0)       <= '0';
-						red_counter   := 0;
-						blue_counter  := 0;
-						green_counter := 0;
-						txt2          := "--------";
-					end if;
+			if SW(17) = '1' then
+				-- MOTOR DC OFF
+				GPIO(27)   <= '0';
+				next_state <= COLOR_SENSOR;
+				counter    := 0;
+			elsif SW(16) = '1' THEN
+				next_state <= IDLE;
+			end if;
 
-			end case;
+			if KEY(0) = '0' then
+				LEDR(17)   <= '0';
+				LEDR(16)   <= '0';
+				LEDR(15)   <= '0';
+				next_state <= IDLE;
+			end if;
 
 			-- DEBUG MOTOR
 			LEDR(6) <= GPIO(27);
 			-- DEBUG SENSOR PRESENCE
 			LEDR(5) <= not (GPIO(1));
-
-			-- MANUAL OPTIONS
-			if SW(0) = '1' then
-				next_state <= IDLE;
-			elsif SW(1) = '1' then
-				next_state <= COLOR_SENSOR;
-			elsif SW(5) = '1' then
-				txt2 := "--------";
-
-				a := altura_medida;
-				x := a/100;
-				y := a/10 - x*10;
-				z := a - x*100 - y*10;
-
-				txt2(3) := 'C';
-				txt2(4) := 'M';
-
-				case z is
-					when 0      => txt2(8) := '0';
-					when 1      => txt2(8) := '1';
-					when 2      => txt2(8) := '2';
-					when 3      => txt2(8) := '3';
-					when 4      => txt2(8) := '4';
-					when 5      => txt2(8) := '5';
-					when 6      => txt2(8) := '6';
-					when 7      => txt2(8) := '7';
-					when 8      => txt2(8) := '8';
-					when 9      => txt2(8) := '9';
-					when others => txt2(8) := '-';
-				end case;
-				case y is
-					when 0      => txt2(7) := '0';
-					when 1      => txt2(7) := '1';
-					when 2      => txt2(7) := '2';
-					when 3      => txt2(7) := '3';
-					when 4      => txt2(7) := '4';
-					when 5      => txt2(7) := '5';
-					when 6      => txt2(7) := '6';
-					when 7      => txt2(7) := '7';
-					when 8      => txt2(7) := '8';
-					when 9      => txt2(7) := '9';
-					when others => txt2(7) := '-';
-				end case;
-				case x is
-					when 0      => txt2(6) := '0';
-					when 1      => txt2(6) := '1';
-					when 2      => txt2(6) := '2';
-					when 3      => txt2(6) := '3';
-					when 4      => txt2(6) := '4';
-					when 5      => txt2(6) := '5';
-					when 6      => txt2(6) := '6';
-					when 7      => txt2(6) := '7';
-					when 8      => txt2(6) := '8';
-					when 9      => txt2(6) := '9';
-					when others => txt2(6) := '-';
-				end case;
-
-			end if;
 
 			counter := counter + 1;
 			txt     <= txt2;            -- no line after this
