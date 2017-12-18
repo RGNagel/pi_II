@@ -225,79 +225,6 @@ begin
 					-- MOTOR DC ON
 					GPIO(27) <= '1';    -- 1
 
-					-------------------- REMOVE ------------------ \/
---					counter := 0;
---					txt2    := "--------";
---
---					counter_trigger := counter_trigger + 1;
---					if counter_trigger < TRIGGER_TIME then
---						GPIO(3) <= '1';
---					elsif counter_trigger < AFTER_TRIGGER_TIME then
---
---						GPIO(3) <= '0';
---					else
---						counter_trigger := 0;
---
---						GPIO(3) <= '0';
---					end if;
---
---					if altura_medida > 400 then
---						a := 400;
---					else
---						a := altura_medida;
---					end if;
---
---					a := 140 - a;
---
---					x := a/100;
---					y := a/10 - x*10;
---					z := a - x*100 - y*10;
---
---					txt2(3) := 'M';
---					txt2(4) := 'M';
---
---					case z is
---						when 0      => txt2(8) := '0';
---						when 1      => txt2(8) := '1';
---						when 2      => txt2(8) := '2';
---						when 3      => txt2(8) := '3';
---						when 4      => txt2(8) := '4';
---						when 5      => txt2(8) := '5';
---						when 6      => txt2(8) := '6';
---						when 7      => txt2(8) := '7';
---						when 8      => txt2(8) := '8';
---						when 9      => txt2(8) := '9';
---						when others => txt2(8) := '-';
---					end case;
---					case y is
---						when 0      => txt2(7) := '0';
---						when 1      => txt2(7) := '1';
---						when 2      => txt2(7) := '2';
---						when 3      => txt2(7) := '3';
---						when 4      => txt2(7) := '4';
---						when 5      => txt2(7) := '5';
---						when 6      => txt2(7) := '6';
---						when 7      => txt2(7) := '7';
---						when 8      => txt2(7) := '8';
---						when 9      => txt2(7) := '9';
---						when others => txt2(7) := '-';
---					end case;
---					case x is
---						when 0      => txt2(6) := '0';
---						when 1      => txt2(6) := '1';
---						when 2      => txt2(6) := '2';
---						when 3      => txt2(6) := '3';
---						when 4      => txt2(6) := '4';
---						when 5      => txt2(6) := '5';
---						when 6      => txt2(6) := '6';
---						when 7      => txt2(6) := '7';
---						when 8      => txt2(6) := '8';
---						when 9      => txt2(6) := '9';
---						when others => txt2(6) := '-';
---					end case;
-
-					-------------------- REMOVE ------------------ /\
-
 					-- IF PRESENCE SENSOR DETECTED SOMETHING
 					if sensor_red = '0' then -- sensor de presença
 						LEDR(17) <= '0';
@@ -372,13 +299,13 @@ begin
 					if red_counter > COLOR_COUNT_TIME OR blue_counter > COLOR_COUNT_TIME OR green_counter > COLOR_COUNT_TIME then
 						if red_counter > blue_counter AND red_counter > green_counter then
 							txt2 := "-----RED";
-							sentido_motor <= '1';
+							--sentido_motor <= '1';
 						elsif blue_counter > red_counter AND blue_counter > green_counter then
 							txt2 := "----BLUE";
-							sentido_motor <= '1';
+							--sentido_motor <= '1';
 						elsif green_counter > red_counter AND green_counter > blue_counter then
 							txt2 := "---GREEN";
-							sentido_motor <= '0';
+							--sentido_motor <= '0';
 						end if;
 						red_counter := 0;
 						blue_counter := 0;
@@ -397,6 +324,7 @@ begin
 						blue_counter  := 0;
 						green_counter := 0;
 						txt2          := "--------";
+						sentido_motor <= '0';
 					end if;
 
 				when PRINT_CALC_ALT =>
@@ -409,7 +337,7 @@ begin
 						a := altura_medida;
 					end if;
 
-					a := 140 - a;
+					a := 138 - a;
 
 					x := a/100;
 					y := a/10 - x*10;
