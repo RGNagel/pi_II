@@ -9,18 +9,16 @@ ENTITY readEcho IS
 	PORT(
 		CLOCK_50      : IN  std_logic;
 		ECHO          : IN  std_logic;
-		altura_medida : OUT integer
+		altura_medida :  OUT integer
 	);
 
 END readEcho;
 ARCHITECTURE interface OF readEcho IS
-	CONSTANT height   : integer := 20;  -- cm
-	SIGNAL estado     : integer range 0 to 2;
 	SIGNAL tcontador  : integer := 0;
 	--SIGNAL tcontador : unsigned(31 downto 0);
 	SIGNAL measure    : integer range 0 to 511;
 	SIGNAL echoevent  : std_logic;
-	type state is (IDLE, READ, DONE);
+	type state is (IDLE, READ1, DONE);
 	signal next_state : state   := IDLE;
 BEGIN
 	PROCESS(CLOCK_50, ECHO)
@@ -29,16 +27,20 @@ BEGIN
 			CASE next_state IS
 				WHEN IDLE =>
 					IF ECHO = '1' THEN
-						next_state <= READ;
+						next_state <= READ1;
 					END IF;
-				WHEN READ =>
+				WHEN READ1 =>
 					IF ECHO = '1' THEN
 						tcontador <= tcontador + 1;
-					ELSE
+					ELSIF tcontador > 5800 THEN -- 100
 						next_state <= DONE;
+					ELSE 
+						next_state <= IDLE;
+						tcontador <= 0;
 					END IF;
 				WHEN DONE =>
-					altura_medida <= tcontador/3000;
+					altura_medida <= tcontador/290;
+					--altura_medida<= abs(140-((2*tcontador)/(580)));
 					tcontador     <= 0;
 					next_state    <= IDLE;
 			END CASE;
